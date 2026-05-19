@@ -1,3 +1,4 @@
+// our amazing website
 import { motion, useReducedMotion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
