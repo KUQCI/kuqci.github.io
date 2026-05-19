@@ -1,0 +1,16 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<article
+  class:list={[
+    'technical-panel rounded-2xl p-6 transition duration-200 hover:border-cyan-quantum/35 hover:shadow-blue-glow',
+    className
+  ]}
+>
+  <slot />
+</article>

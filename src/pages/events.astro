@@ -1,0 +1,51 @@
+---
+import '../styles/global.css';
+import { getCollection } from 'astro:content';
+import Navbar from '../components/shared/Navbar.astro';
+import Footer from '../components/shared/Footer.astro';
+import SectionHeader from '../components/shared/SectionHeader.astro';
+import EventsExperience from '../components/events/EventsExperience';
+import type { SerializedEvent } from '../components/events/types';
+
+const eventEntries = await getCollection('events');
+const events: SerializedEvent[] = eventEntries
+  .map((entry) => ({
+    slug: entry.slug,
+    ...entry.data
+  }))
+  .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Browse Quantum Computing Initiative workshops, hackathons, talks, bootcamps, and community sessions."
+    />
+    <title>Events | QCI</title>
+  </head>
+  <body>
+    <Navbar />
+    <main class="pt-32">
+      <section class="pb-14">
+        <div class="section-shell">
+          <SectionHeader
+            eyebrow="Events"
+            title="Events"
+            copy="Workshops, hackathons, and community sessions for learning and building quantum."
+          />
+        </div>
+      </section>
+
+      <section class="pb-24">
+        <div class="section-shell">
+          <EventsExperience events={events} client:load />
+        </div>
+      </section>
+    </main>
+    <Footer />
+  </body>
+</html>

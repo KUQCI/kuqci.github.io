@@ -1,0 +1,150 @@
+---
+import site from '../../data/site.json';
+
+interface Props {
+  home?: boolean;
+}
+
+const { home = false } = Astro.props;
+const links = [
+  { label: 'About', href: home ? '#mission' : '/#mission' },
+  { label: 'Events', href: '/events' },
+  { label: 'R&D', href: '/rd' },
+  { label: 'Sponsors', href: home ? '#sponsors' : '/#sponsors' },
+  { label: 'Contact', href: home ? '#contact' : '/#contact' }
+];
+---
+
+{
+  home && (
+    <a
+      href="#top"
+      class="fixed left-4 top-4 z-50 inline-flex h-11 w-11 items-center justify-center rounded-full border border-cyan-quantum/20 bg-ink/35 text-sm font-bold text-white backdrop-blur-md transition hover:border-gold-duck/50 hover:text-gold-duck"
+      aria-label="QCI home"
+    >
+      QCI
+    </a>
+  )
+}
+
+<header
+  data-navbar
+  data-home={home ? 'true' : 'false'}
+  class:list={[
+    'fixed left-0 right-0 top-4 z-40 px-4 transition duration-300',
+    home ? 'pointer-events-none -translate-y-3 opacity-0' : 'opacity-100'
+  ]}
+>
+  <div class="mx-auto max-w-6xl rounded-2xl border border-cyan-quantum/20 bg-ink/72 shadow-blue-glow backdrop-blur-xl">
+    <nav class="flex items-center justify-between px-4 py-3 md:px-5" aria-label="Primary navigation">
+      <a href="/" class="group flex items-center gap-3" aria-label="Quantum Computing Initiative home">
+        <span class="grid h-10 w-10 place-items-center rounded-xl border border-blue-qci/45 bg-blue-qci/15 text-sm font-black text-white transition group-hover:border-gold-duck/60 group-hover:text-gold-duck">
+          Q
+        </span>
+        <span class="hidden leading-tight sm:block">
+          <span class="block text-sm font-semibold text-white">{site.shortName}</span>
+          <span class="mono-label block text-[0.68rem] text-slate-400">{site.affiliation}</span>
+        </span>
+      </a>
+
+      <div class="hidden items-center gap-7 md:flex">
+        {
+          links.map((link) => (
+            <a
+              href={link.href}
+              class="relative text-sm font-medium text-slate-300 transition after:absolute after:-bottom-2 after:left-0 after:h-px after:w-0 after:bg-gold-duck after:transition-all hover:text-white hover:after:w-full"
+            >
+              {link.label}
+            </a>
+          ))
+        }
+        <a
+          href={site.githubUrl}
+          class="rounded-xl border border-blue-qci/35 px-3 py-2 text-sm font-semibold text-cyan-quantum transition hover:border-gold-duck/50 hover:text-gold-duck"
+          target="_blank"
+          rel="noreferrer"
+        >
+          GitHub
+        </a>
+      </div>
+
+      <button
+        data-menu-button
+        class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-cyan-quantum/25 text-slate-100 transition hover:border-gold-duck/60 hover:text-gold-duck md:hidden"
+        type="button"
+        aria-label="Open navigation menu"
+        aria-expanded="false"
+      >
+        <span aria-hidden="true" class="text-xl">=</span>
+      </button>
+    </nav>
+
+    <div data-menu class="hidden border-t border-cyan-quantum/10 px-4 pb-4 md:hidden">
+      <div class="grid gap-2 pt-3">
+        {
+          links.map((link) => (
+            <a
+              href={link.href}
+              class="rounded-xl px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-blue-qci/10 hover:text-gold-duck"
+            >
+              {link.label}
+            </a>
+          ))
+        }
+        <a
+          href={site.githubUrl}
+          class="rounded-xl px-3 py-2 text-sm font-medium text-cyan-quantum transition hover:bg-blue-qci/10 hover:text-gold-duck"
+          target="_blank"
+          rel="noreferrer"
+        >
+          GitHub
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<style>
+  [data-navbar].navbar-visible {
+    pointer-events: auto;
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+
+<script>
+  const navbars = document.querySelectorAll<HTMLElement>('[data-navbar]');
+
+  navbars.forEach((navbar) => {
+    const menu = navbar.querySelector<HTMLElement>('[data-menu]');
+    const button = navbar.querySelector<HTMLButtonElement>('[data-menu-button]');
+    const isHome = navbar.dataset.home === 'true';
+
+    const updateVisibility = () => {
+      if (!isHome) {
+        navbar.classList.add('navbar-visible');
+        return;
+      }
+
+      navbar.classList.toggle('navbar-visible', window.scrollY > window.innerHeight * 0.34);
+    };
+
+    button?.addEventListener('click', () => {
+      const expanded = button.getAttribute('aria-expanded') === 'true';
+      button.setAttribute('aria-expanded', String(!expanded));
+      button.setAttribute('aria-label', expanded ? 'Open navigation menu' : 'Close navigation menu');
+      menu?.classList.toggle('hidden', expanded);
+    });
+
+    menu?.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        button?.setAttribute('aria-expanded', 'false');
+        button?.setAttribute('aria-label', 'Open navigation menu');
+        menu.classList.add('hidden');
+      });
+    });
+
+    updateVisibility();
+    window.addEventListener('scroll', updateVisibility, { passive: true });
+  });
+</script>

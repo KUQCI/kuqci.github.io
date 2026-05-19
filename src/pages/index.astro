@@ -1,0 +1,85 @@
+---
+import '../styles/global.css';
+import Navbar from '../components/shared/Navbar.astro';
+import Footer from '../components/shared/Footer.astro';
+import SectionHeader from '../components/shared/SectionHeader.astro';
+import Card from '../components/shared/Card.astro';
+import Button from '../components/shared/Button.astro';
+import PondHero from '../components/home/PondHero';
+import MissionCards from '../components/home/MissionCards.astro';
+import EventsHighlight from '../components/home/EventsHighlight.astro';
+import RDHighlight from '../components/home/RDHighlight.astro';
+import SponsorStrip from '../components/home/SponsorStrip.astro';
+import EndCard from '../components/home/EndCard.astro';
+import site from '../data/site.json';
+
+const entryPoints = [
+  { title: 'Attend an event', href: '/events', copy: 'Start with a workshop, talk, hackathon, or showcase.' },
+  { title: 'Join the events team', href: site.joinUrl, copy: 'Help shape beginner-friendly learning experiences.' },
+  { title: 'Contribute to R&D', href: '/rd', copy: 'Pick an open-source project and build with the team.' },
+  { title: 'Partner with us', href: `mailto:${site.contactEmail}`, copy: 'Collaborate on talks, mentoring, or technical programming.' },
+  { title: 'Sponsor an initiative', href: `mailto:${site.contactEmail}`, copy: 'Support workshops, hackathons, prototypes, and student contributors.' }
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Quantum Computing Initiative at Khalifa University. Learn quantum. Build quantum. Contribute to the ecosystem."
+    />
+    <title>Quantum Computing Initiative</title>
+  </head>
+  <body>
+    <Navbar home />
+    <main>
+      <PondHero client:load />
+
+      <section id="mission" class="py-24">
+        <div class="section-shell">
+          <SectionHeader
+            eyebrow="Our mission"
+            title="Our mission"
+            copy="QCI exists to make quantum computing accessible, practical, and collaborative. Through events, education, and open-source development, we help students move from first concepts to real contributions."
+          />
+          <div class="mt-10">
+            <MissionCards />
+          </div>
+        </div>
+      </section>
+
+      <EventsHighlight />
+      <RDHighlight />
+
+      <section id="contact" class="py-24">
+        <div class="section-shell">
+          <SectionHeader eyebrow="Join" title="Find your entry point" />
+          <!-- TODO: Replace placeholder form and email URLs with official QCI intake links. -->
+          <div class="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-5">
+            {
+              entryPoints.map((entry) => (
+                <Card class="p-5">
+                  <h3 class="text-lg font-semibold text-white">{entry.title}</h3>
+                  <p class="mt-4 text-sm leading-6 text-slate-300">{entry.copy}</p>
+                  <a class="mt-5 inline-flex text-sm font-semibold text-gold-duck transition hover:text-white" href={entry.href}>
+                    Open -&gt;
+                  </a>
+                </Card>
+              ))
+            }
+          </div>
+          <div class="mt-8">
+            <Button href={`mailto:${site.contactEmail}`} variant="secondary">Contact QCI</Button>
+          </div>
+        </div>
+      </section>
+
+      <SponsorStrip />
+      <EndCard />
+    </main>
+    <Footer />
+  </body>
+</html>

@@ -1,0 +1,22 @@
+---
+import Button from '../shared/Button.astro';
+import site from '../../data/site.json';
+---
+
+<section class="pb-24">
+  <div class="section-shell">
+    <div class="overflow-hidden rounded-2xl border border-gold-duck/25 bg-gradient-to-br from-surface via-surface-2 to-ink p-8 shadow-gold-glow md:p-12">
+      <div class="max-w-3xl">
+        <p class="mono-label mb-4 text-xs uppercase text-gold-duck">Next step</p>
+        <h2 class="text-3xl font-semibold text-white md:text-5xl">Start where you are. Build what comes next.</h2>
+        <p class="mt-5 text-lg leading-8 text-slate-300">
+          Whether you are new to quantum or ready to contribute code, QCI gives you a place to begin.
+        </p>
+      </div>
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <Button href={site.joinUrl}>Join the Initiative</Button>
+        <Button href="/rd" variant="secondary">Explore Projects</Button>
+      </div>
+    </div>
+  </div>
+</section>
