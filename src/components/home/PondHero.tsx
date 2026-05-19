@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
 
 const ringTransition = {
   duration: 10,
@@ -6,12 +7,166 @@ const ringTransition = {
   ease: 'linear'
 } as const;
 
+const BLOCH_CENTER = 360;
+const STATE_VECTOR_BASE_ANGLE =
+  (Math.atan2(280 - BLOCH_CENTER, 468 - BLOCH_CENTER) * 180) / Math.PI;
+
+type SphereOrbital = {
+  rx: number;
+  ry: number;
+  stroke: string;
+  strokeOpacity: number;
+  baseAngle: number;
+  duration: number;
+  direction: 1 | -1;
+};
+
+const sphereOrbitals = [
+  {
+    rx: 212,
+    ry: 78,
+    stroke: '#7dd3fc',
+    strokeOpacity: 0.36,
+    baseAngle: 18,
+    duration: 27,
+    direction: 1
+  },
+  {
+    rx: 212,
+    ry: 78,
+    stroke: '#2f80ed',
+    strokeOpacity: 0.28,
+    baseAngle: -48,
+    duration: 38,
+    direction: -1
+  },
+  {
+    rx: 212,
+    ry: 78,
+    stroke: '#7dd3fc',
+    strokeOpacity: 0.22,
+    baseAngle: 78,
+    duration: 46,
+    direction: 1
+  },
+  {
+    rx: 212,
+    ry: 78,
+    stroke: '#2f80ed',
+    strokeOpacity: 0.24,
+    baseAngle: -82,
+    duration: 31,
+    direction: -1
+  }
+] as const satisfies readonly SphereOrbital[];
+
 export default function PondHero() {
   const reduceMotion = useReducedMotion();
-  const loop = reduceMotion ? {} : { rotate: 360 };
+  const graphicRef = useRef<HTMLDivElement>(null);
+  const lastPointerRef = useRef<{ x: number; y: number } | null>(null);
+  const lastVectorRotationRef = useRef<number | null>(null);
+  const orbitalLayoutRef = useRef<Array<{ phaseDelay: number; planeAngle: number }> | null>(null);
+  const [cursorVectorRotation, setCursorVectorRotation] = useState<number | null>(null);
+
+  if (orbitalLayoutRef.current === null) {
+    const elapsedSeconds =
+      typeof performance === 'undefined' ? Date.now() / 1000 : performance.now() / 1000;
+    const directionCounts = sphereOrbitals.reduce<Record<1 | -1, number>>(
+      (counts, orbital) => {
+        counts[orbital.direction] += 1;
+        return counts;
+      },
+      { 1: 0, '-1': 0 }
+    );
+    const directionSeen: Record<1 | -1, number> = { 1: 0, '-1': 0 };
+    const directionStartPhase: Record<1 | -1, number> = {
+      1: Math.random(),
+      '-1': Math.random()
+    };
+
+    orbitalLayoutRef.current = sphereOrbitals.map((orbital) => {
+      const groupIndex = directionSeen[orbital.direction];
+      const groupCount = directionCounts[orbital.direction];
+      const jitter = (Math.random() - 0.5) * 0.08;
+      const phase = (directionStartPhase[orbital.direction] + groupIndex / groupCount + jitter + 1) % 1;
+      const phaseDelay = -((elapsedSeconds + phase * orbital.duration) % orbital.duration);
+      const planeAngle = orbital.baseAngle + (Math.random() - 0.5) * 22;
+
+      directionSeen[orbital.direction] += 1;
+
+      return { phaseDelay, planeAngle };
+    });
+  }
+
+  const orbitalLayout = orbitalLayoutRef.current;
   const pulse = reduceMotion ? {} : { opacity: [0.32, 0.88, 0.32], scale: [1, 1.05, 1] };
   const bob = reduceMotion ? {} : { y: [0, -4, 0] };
-  const precess = reduceMotion ? {} : { rotate: [-8, 16, -8] };
+  const pointerStateVectorTransition = {
+    type: 'spring' as const,
+    stiffness: 90,
+    damping: 20,
+    mass: 0.45
+  };
+  const stateVectorAnimate = { rotate: cursorVectorRotation ?? -24 };
+  const stateVectorTransition =
+    cursorVectorRotation === null ? { duration: 0 } : pointerStateVectorTransition;
+
+  useEffect(() => {
+    const unwrapToNearestRotation = (targetRotation: number) => {
+      const previousRotation = lastVectorRotationRef.current;
+
+      if (previousRotation === null) {
+        lastVectorRotationRef.current = targetRotation;
+        return targetRotation;
+      }
+
+      const delta = ((((targetRotation - previousRotation) % 360) + 540) % 360) - 180;
+      const nextRotation = previousRotation + delta;
+      lastVectorRotationRef.current = nextRotation;
+      return nextRotation;
+    };
+
+    const pointStateVectorAt = (x: number, y: number) => {
+      const rect = graphicRef.current?.getBoundingClientRect();
+
+      if (!rect) {
+        return;
+      }
+
+      const originX = rect.left + rect.width / 2;
+      const originY = rect.top + rect.height / 2;
+      const dx = x - originX;
+      const dy = y - originY;
+
+      if (Math.hypot(dx, dy) < 8) {
+        return;
+      }
+
+      const cursorAngle = (Math.atan2(dy, dx) * 180) / Math.PI;
+      setCursorVectorRotation(unwrapToNearestRotation(cursorAngle - STATE_VECTOR_BASE_ANGLE));
+    };
+
+    const handlePointerMove = (event: PointerEvent) => {
+      lastPointerRef.current = { x: event.clientX, y: event.clientY };
+      pointStateVectorAt(event.clientX, event.clientY);
+    };
+
+    const updateFromLastPointer = () => {
+      if (lastPointerRef.current) {
+        pointStateVectorAt(lastPointerRef.current.x, lastPointerRef.current.y);
+      }
+    };
+
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    window.addEventListener('scroll', updateFromLastPointer, { passive: true });
+    window.addEventListener('resize', updateFromLastPointer);
+
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('scroll', updateFromLastPointer);
+      window.removeEventListener('resize', updateFromLastPointer);
+    };
+  }, []);
 
   return (
     <section
@@ -28,7 +183,10 @@ export default function PondHero() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(125,211,252,0.06),transparent_34rem)]" />
 
       <div className="section-shell relative z-10 grid min-h-screen place-items-center py-24">
-        <div className="relative mx-auto aspect-square w-full max-w-[780px]">
+        <div
+          ref={graphicRef}
+          className="relative mx-auto aspect-square w-full max-w-[780px] -translate-y-14 md:-translate-y-20"
+        >
           <motion.svg
             className="absolute inset-0 h-full w-full"
             viewBox="0 0 720 720"
@@ -48,6 +206,11 @@ export default function PondHero() {
                 <stop offset="0%" stopColor="#2f80ed" stopOpacity="0.18" />
                 <stop offset="50%" stopColor="#7dd3fc" stopOpacity="0.78" />
                 <stop offset="100%" stopColor="#2f80ed" stopOpacity="0.18" />
+              </linearGradient>
+              <linearGradient id="duckDown" x1="0" y1="0" x2="0.9" y2="1">
+                <stop offset="0%" stopColor="#fff3a3" />
+                <stop offset="48%" stopColor="#f6d766" />
+                <stop offset="100%" stopColor="#eab84d" />
               </linearGradient>
               <marker
                 id="stateArrow"
@@ -104,11 +267,7 @@ export default function PondHero() {
               ))}
             </motion.g>
 
-            <motion.g
-              style={{ transformOrigin: '360px 360px' }}
-              animate={loop}
-              transition={{ ...ringTransition, duration: 28 }}
-            >
+            <g>
               <ellipse
                 cx="360"
                 cy="360"
@@ -117,26 +276,29 @@ export default function PondHero() {
                 fill="none"
                 stroke="url(#cyanLine)"
                 strokeDasharray="5 10"
-                strokeOpacity="0.42"
+                strokeOpacity="0.32"
+                strokeWidth="1.2"
               />
-              <ellipse
-                cx="360"
-                cy="360"
-                rx="212"
-                ry="70"
-                fill="none"
-                stroke="#7dd3fc"
-                strokeOpacity="0.46"
-              />
-              <ellipse
-                cx="360"
-                cy="360"
-                rx="70"
-                ry="212"
-                fill="none"
-                stroke="#2f80ed"
-                strokeOpacity="0.3"
-              />
+              {sphereOrbitals.map((orbital, index) => (
+                <motion.g
+                  key={`${orbital.rx}-${orbital.ry}-${orbital.baseAngle}`}
+                  style={{ transformBox: 'view-box', transformOrigin: '360px 360px' }}
+                  animate={reduceMotion ? {} : { rotate: orbital.direction * 360 }}
+                  transition={{ ...ringTransition, duration: orbital.duration, delay: orbitalLayout[index].phaseDelay }}
+                >
+                  <ellipse
+                    cx="360"
+                    cy="360"
+                    rx={orbital.rx}
+                    ry={orbital.ry}
+                    fill="none"
+                    stroke={orbital.stroke}
+                    strokeOpacity={orbital.strokeOpacity}
+                    strokeWidth="1.2"
+                    transform={`rotate(${orbitalLayout[index].planeAngle} 360 360)`}
+                  />
+                </motion.g>
+              ))}
               <path
                 d="M360 148 L360 572"
                 fill="none"
@@ -151,28 +313,7 @@ export default function PondHero() {
                 strokeDasharray="2 12"
                 strokeOpacity="0.18"
               />
-            </motion.g>
-
-            <motion.g
-              style={{ transformOrigin: '360px 360px' }}
-              animate={reduceMotion ? {} : { rotate: -360 }}
-              transition={{ ...ringTransition, duration: 38 }}
-            >
-              <path
-                d="M178 360 C242 224 478 224 542 360 C478 496 242 496 178 360Z"
-                fill="none"
-                stroke="#7dd3fc"
-                strokeOpacity="0.24"
-                strokeWidth="1.2"
-              />
-              <path
-                d="M360 148 C488 218 488 502 360 572 C232 502 232 218 360 148Z"
-                fill="none"
-                stroke="#2f80ed"
-                strokeOpacity="0.26"
-                strokeWidth="1.2"
-              />
-            </motion.g>
+            </g>
 
             <motion.g
               initial={{ opacity: 0, pathLength: 0 }}
@@ -180,9 +321,9 @@ export default function PondHero() {
               transition={{ delay: reduceMotion ? 0 : 0.9, duration: reduceMotion ? 0 : 1 }}
             >
               <motion.g
-                style={{ transformOrigin: '360px 360px' }}
-                animate={precess}
-                transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+                style={{ transformBox: 'view-box', transformOrigin: '360px 360px' }}
+                animate={stateVectorAnimate}
+                transition={stateVectorTransition}
               >
                 <path
                   d="M360 360 L468 280"
@@ -201,22 +342,6 @@ export default function PondHero() {
                   strokeLinecap="round"
                   markerEnd="url(#stateArrow)"
                 />
-                <path
-                  d="M468 280 L468 392"
-                  fill="none"
-                  stroke="#f6c453"
-                  strokeDasharray="5 8"
-                  strokeOpacity="0.35"
-                  strokeWidth="1.5"
-                />
-                <path
-                  d="M360 392 C391 372 429 372 468 392"
-                  fill="none"
-                  stroke="#f6c453"
-                  strokeDasharray="3 7"
-                  strokeOpacity="0.48"
-                  strokeWidth="1.6"
-                />
                 <motion.circle
                   cx="468"
                   cy="280"
@@ -226,29 +351,8 @@ export default function PondHero() {
                   animate={reduceMotion ? {} : { r: [4, 6, 4], opacity: [0.7, 1, 0.7] }}
                   transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
                 />
-                <circle cx="468" cy="392" r="3.5" fill="#7dd3fc" opacity="0.8" />
               </motion.g>
               <circle cx="360" cy="360" r="4.5" fill="#f6c453" opacity="0.92" />
-            </motion.g>
-
-            <motion.g
-              style={{ transformOrigin: '360px 360px' }}
-              animate={reduceMotion ? {} : { rotate: 360 }}
-              transition={{ ...ringTransition, duration: 18 }}
-              opacity="0.86"
-            >
-              <ellipse
-                cx="360"
-                cy="392"
-                rx="108"
-                ry="23"
-                fill="none"
-                stroke="#7dd3fc"
-                strokeDasharray="2 12"
-                strokeOpacity="0.32"
-              />
-              <circle cx="468" cy="392" r="3.5" fill="#7dd3fc" opacity="0.95" />
-              <circle cx="252" cy="392" r="2.6" fill="#2f80ed" opacity="0.7" />
             </motion.g>
 
             <g className="mono-label" aria-hidden="true">
@@ -261,49 +365,34 @@ export default function PondHero() {
               <text x="579" y="364" fill="#7dd3fc" fillOpacity="0.34" fontSize="13">
                 x
               </text>
-              <text x="474" y="270" fill="#f6c453" fillOpacity="0.78" fontSize="13">
-                psi
-              </text>
             </g>
 
             <motion.g animate={bob} transition={{ duration: 3.8, repeat: Infinity, ease: 'easeInOut' }}>
-              <ellipse cx="355" cy="411" rx="126" ry="20" fill="#2f80ed" opacity="0.15" />
-              <ellipse cx="356" cy="412" rx="82" ry="10" fill="#7dd3fc" opacity="0.09" />
+              <ellipse cx="360" cy="405" rx="68" ry="12" fill="#2f80ed" opacity="0.2" />
               <path
-                d="M262 374 C247 361 237 346 232 330 C257 333 280 345 294 364 C315 342 355 326 404 331 C454 336 486 360 494 394 C456 415 361 430 281 410 C260 405 250 391 262 374Z"
-                fill="#f8fafc"
-                opacity="0.92"
+                d="M302 366 C310 338 343 324 383 331 C420 337 442 357 444 382 C416 397 355 405 310 390 C302 386 297 376 302 366Z"
+                fill="url(#duckDown)"
+                opacity="1"
               />
               <path
-                d="M421 341 C421 313 443 292 470 293 C499 294 519 315 516 339 C501 353 474 357 450 347 C438 351 430 361 425 374 L405 371 C407 358 413 348 421 341Z"
-                fill="#f8fafc"
-                opacity="0.92"
+                d="M397 337 C415 337 430 348 435 363 C426 376 405 380 390 369 C390 355 393 344 397 337Z"
+                fill="url(#duckDown)"
+                opacity="1"
               />
               <path
-                d="M514 331 L554 343 L513 355 C519 347 519 339 514 331Z"
-                fill="#f6c453"
-                opacity="0.96"
+                d="M405 328 C421 304 450 307 459 331 C446 347 423 350 405 338Z"
+                fill="url(#duckDown)"
+                opacity="1"
               />
-              <path d="M515 344 L549 345" fill="none" stroke="#050914" strokeOpacity="0.22" strokeWidth="1.4" />
-              <circle cx="497" cy="323" r="4.2" fill="#050914" opacity="0.88" />
-              <circle cx="498.5" cy="321.8" r="1.2" fill="#f8fafc" opacity="0.88" />
+              <path d="M458 325 L484 330 L457 337 Z" fill="#f0a72f" />
+              <circle cx="446" cy="327" r="3.4" fill="#050914" opacity="0.88" />
               <path
-                d="M292 391 C327 367 379 364 430 388"
+                d="M327 362 C348 349 378 350 405 365"
                 fill="none"
-                stroke="#08111f"
-                strokeOpacity="0.22"
-                strokeWidth="5"
+                stroke="#9a6b16"
+                strokeOpacity="0.26"
+                strokeWidth="4"
                 strokeLinecap="round"
-              />
-              <path
-                d="M312 404 C355 413 421 407 484 391 C475 406 431 420 365 423 C324 424 289 418 268 407 C280 410 295 409 312 404Z"
-                fill="#dbeafe"
-                opacity="0.42"
-              />
-              <path
-                d="M232 330 C218 335 205 346 197 361 C220 361 241 353 256 338"
-                fill="#f8fafc"
-                opacity="0.84"
               />
             </motion.g>
 
@@ -320,6 +409,11 @@ export default function PondHero() {
             ))}
           </motion.svg>
 
+          <div
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-[46%] bg-gradient-to-t from-ink via-ink/88 to-transparent"
+            aria-hidden="true"
+          />
+
           <motion.div
             className="absolute inset-x-0 bottom-0 mx-auto max-w-3xl px-4 text-center md:bottom-3"
             initial={{ opacity: 0, y: 18 }}
@@ -335,7 +429,25 @@ export default function PondHero() {
             <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-slate-300 md:text-xl">
               Learn quantum. Build quantum. Contribute to the ecosystem.
             </p>
-            <p className="mono-label mt-10 text-xs uppercase text-slate-500">Scroll to enter</p>
+            <p className="mono-label mt-10 flex flex-col items-center justify-center gap-2 text-xs uppercase text-slate-500">
+              <span>Scroll to enter</span>
+              <motion.svg
+                aria-hidden="true"
+                className="h-3.5 w-3.5 text-slate-500"
+                viewBox="0 0 16 16"
+                fill="none"
+                animate={reduceMotion ? {} : { y: [0, 3, 0], opacity: [0.45, 0.8, 0.45] }}
+                transition={{ duration: 2.1, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <path
+                  d="M8 2.5V12M4.25 8.25 8 12l3.75-3.75"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </motion.svg>
+            </p>
           </motion.div>
         </div>
       </div>
