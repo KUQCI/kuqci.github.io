@@ -11,7 +11,7 @@ export default function PondHero() {
   const loop = reduceMotion ? {} : { rotate: 360 };
   const pulse = reduceMotion ? {} : { opacity: [0.32, 0.88, 0.32], scale: [1, 1.05, 1] };
   const bob = reduceMotion ? {} : { y: [0, -4, 0] };
-  const precess = reduceMotion ? {} : { rotate: [-8, 16, -8] };
+  const precess = reduceMotion ? {} : { rotate: [-30, 0, -30] };
 
   return (
     <section
@@ -48,6 +48,11 @@ export default function PondHero() {
                 <stop offset="0%" stopColor="#2f80ed" stopOpacity="0.18" />
                 <stop offset="50%" stopColor="#7dd3fc" stopOpacity="0.78" />
                 <stop offset="100%" stopColor="#2f80ed" stopOpacity="0.18" />
+              </linearGradient>
+              <linearGradient id="duckDown" x1="0" y1="0" x2="0.9" y2="1">
+                <stop offset="0%" stopColor="#fff3a3" />
+                <stop offset="48%" stopColor="#f6d766" />
+                <stop offset="100%" stopColor="#eab84d" />
               </linearGradient>
               <marker
                 id="stateArrow"
@@ -158,19 +163,38 @@ export default function PondHero() {
               animate={reduceMotion ? {} : { rotate: -360 }}
               transition={{ ...ringTransition, duration: 38 }}
             >
-              <path
-                d="M178 360 C242 224 478 224 542 360 C478 496 242 496 178 360Z"
+              <ellipse
+                cx="360"
+                cy="360"
+                rx="212"
+                ry="78"
                 fill="none"
                 stroke="#7dd3fc"
                 strokeOpacity="0.24"
                 strokeWidth="1.2"
+                transform="rotate(28 360 360)"
               />
-              <path
-                d="M360 148 C488 218 488 502 360 572 C232 502 232 218 360 148Z"
+              <ellipse
+                cx="360"
+                cy="360"
+                rx="212"
+                ry="78"
                 fill="none"
                 stroke="#2f80ed"
                 strokeOpacity="0.26"
                 strokeWidth="1.2"
+                transform="rotate(-54 360 360)"
+              />
+              <ellipse
+                cx="360"
+                cy="360"
+                rx="212"
+                ry="78"
+                fill="none"
+                stroke="#7dd3fc"
+                strokeOpacity="0.18"
+                strokeWidth="1.2"
+                transform="rotate(76 360 360)"
               />
             </motion.g>
 
@@ -180,9 +204,9 @@ export default function PondHero() {
               transition={{ delay: reduceMotion ? 0 : 0.9, duration: reduceMotion ? 0 : 1 }}
             >
               <motion.g
-                style={{ transformOrigin: '360px 360px' }}
+                style={{ transformBox: 'view-box', transformOrigin: '360px 360px' }}
                 animate={precess}
-                transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
               >
                 <path
                   d="M360 360 L468 280"
@@ -200,22 +224,6 @@ export default function PondHero() {
                   strokeWidth="3"
                   strokeLinecap="round"
                   markerEnd="url(#stateArrow)"
-                />
-                <path
-                  d="M468 280 L468 392"
-                  fill="none"
-                  stroke="#f6c453"
-                  strokeDasharray="5 8"
-                  strokeOpacity="0.35"
-                  strokeWidth="1.5"
-                />
-                <path
-                  d="M360 392 C391 372 429 372 468 392"
-                  fill="none"
-                  stroke="#f6c453"
-                  strokeDasharray="3 7"
-                  strokeOpacity="0.48"
-                  strokeWidth="1.6"
                 />
                 <motion.circle
                   cx="468"
@@ -261,49 +269,35 @@ export default function PondHero() {
               <text x="579" y="364" fill="#7dd3fc" fillOpacity="0.34" fontSize="13">
                 x
               </text>
-              <text x="474" y="270" fill="#f6c453" fillOpacity="0.78" fontSize="13">
-                psi
-              </text>
+
             </g>
 
             <motion.g animate={bob} transition={{ duration: 3.8, repeat: Infinity, ease: 'easeInOut' }}>
-              <ellipse cx="355" cy="411" rx="126" ry="20" fill="#2f80ed" opacity="0.15" />
-              <ellipse cx="356" cy="412" rx="82" ry="10" fill="#7dd3fc" opacity="0.09" />
+              <ellipse cx="360" cy="405" rx="68" ry="12" fill="#2f80ed" opacity="0.16" />
               <path
-                d="M262 374 C247 361 237 346 232 330 C257 333 280 345 294 364 C315 342 355 326 404 331 C454 336 486 360 494 394 C456 415 361 430 281 410 C260 405 250 391 262 374Z"
-                fill="#f8fafc"
-                opacity="0.92"
+                d="M302 366 C310 338 343 324 383 331 C420 337 442 357 444 382 C416 397 355 405 310 390 C302 386 297 376 302 366Z"
+                fill="url(#duckDown)"
+                opacity="0.97"
               />
               <path
-                d="M421 341 C421 313 443 292 470 293 C499 294 519 315 516 339 C501 353 474 357 450 347 C438 351 430 361 425 374 L405 371 C407 358 413 348 421 341Z"
-                fill="#f8fafc"
-                opacity="0.92"
+                d="M397 337 C415 337 430 348 435 363 C426 376 405 380 390 369 C390 355 393 344 397 337Z"
+                fill="url(#duckDown)"
+                opacity="0.98"
               />
               <path
-                d="M514 331 L554 343 L513 355 C519 347 519 339 514 331Z"
-                fill="#f6c453"
-                opacity="0.96"
+                d="M405 328 C421 304 450 307 459 331 C446 347 423 350 405 338Z"
+                fill="url(#duckDown)"
+                opacity="0.98"
               />
-              <path d="M515 344 L549 345" fill="none" stroke="#050914" strokeOpacity="0.22" strokeWidth="1.4" />
-              <circle cx="497" cy="323" r="4.2" fill="#050914" opacity="0.88" />
-              <circle cx="498.5" cy="321.8" r="1.2" fill="#f8fafc" opacity="0.88" />
+              <path d="M458 325 L484 330 L457 337 Z" fill="#f0a72f" />
+              <circle cx="446" cy="327" r="3.4" fill="#050914" opacity="0.88" />
               <path
-                d="M292 391 C327 367 379 364 430 388"
+                d="M327 362 C348 349 378 350 405 365"
                 fill="none"
-                stroke="#08111f"
-                strokeOpacity="0.22"
-                strokeWidth="5"
+                stroke="#9a6b16"
+                strokeOpacity="0.26"
+                strokeWidth="4"
                 strokeLinecap="round"
-              />
-              <path
-                d="M312 404 C355 413 421 407 484 391 C475 406 431 420 365 423 C324 424 289 418 268 407 C280 410 295 409 312 404Z"
-                fill="#dbeafe"
-                opacity="0.42"
-              />
-              <path
-                d="M232 330 C218 335 205 346 197 361 C220 361 241 353 256 338"
-                fill="#f8fafc"
-                opacity="0.84"
               />
             </motion.g>
 
