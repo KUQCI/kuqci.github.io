@@ -1,6 +1,7 @@
 ---
 import site from '../../data/site.json';
 
+
 interface Props {
   home?: boolean;
 }
@@ -16,15 +17,7 @@ const links = [
 ---
 
 {
-  home && (
-    <a
-      href="#top"
-      class="fixed left-4 top-4 z-50 inline-flex h-11 w-11 items-center justify-center rounded-full border border-cyan-quantum/20 bg-ink/35 text-sm font-bold text-white backdrop-blur-md transition hover:border-gold-duck/50 hover:text-gold-duck"
-      aria-label="QCI home"
-    >
-      QCI
-    </a>
-  )
+  /* Small floating home button removed per request */
 }
 
 <header
@@ -38,9 +31,7 @@ const links = [
   <div class="mx-auto max-w-6xl rounded-2xl border border-cyan-quantum/20 bg-ink/72 shadow-blue-glow backdrop-blur-xl">
     <nav class="flex items-center justify-between px-4 py-3 md:px-5" aria-label="Primary navigation">
       <a href="/" class="group flex items-center gap-3" aria-label="Quantum Computing Initiative home">
-        <span class="grid h-10 w-10 place-items-center rounded-xl border border-blue-qci/45 bg-blue-qci/15 text-sm font-black text-white transition group-hover:border-gold-duck/60 group-hover:text-gold-duck">
-          Q
-        </span>
+        <img src="/logo.png" alt={`${site.shortName} logo`} class="h-10 w-10 rounded-full border border-cyan-quantum/20 bg-ink/35 object-cover transition group-hover:scale-105" />
         <span class="hidden leading-tight sm:block">
           <span class="block text-sm font-semibold text-white">{site.shortName}</span>
           <span class="mono-label block text-[0.68rem] text-slate-400">{site.affiliation}</span>
