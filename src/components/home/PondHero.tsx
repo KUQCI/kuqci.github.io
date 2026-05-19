@@ -269,7 +269,6 @@ export default function PondHero() {
               <text x="579" y="364" fill="#7dd3fc" fillOpacity="0.34" fontSize="13">
                 x
               </text>
-
             </g>
 
             <motion.g animate={bob} transition={{ duration: 3.8, repeat: Infinity, ease: 'easeInOut' }}>
