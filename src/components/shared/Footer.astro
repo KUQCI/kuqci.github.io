@@ -4,7 +4,7 @@ import site from '../../data/site.json';
 
 <footer class="border-t border-cyan-quantum/10 py-16">
   <div class="section-shell">
-    <div class="grid gap-12 lg:grid-cols-[minmax(220px,1.5fr)_repeat(3,minmax(180px,1fr))]">
+    <div class="grid gap-8 lg:grid-cols-[minmax(220px,1.5fr)_repeat(2,minmax(180px,1fr))]">
       <div class="space-y-6">
         <div class="flex items-center gap-3">
           <img src="/logo.png" alt="{site.shortName} logo" class="h-12 w-12 rounded-full border border-cyan-quantum/20 bg-ink/60 object-cover" />
@@ -13,7 +13,7 @@ import site from '../../data/site.json';
             <p class="text-sm text-slate-500">{site.affiliation}</p>
           </div>
         </div>
-        <p class="max-w-md text-sm leading-6 text-slate-400">A student-led initiative advancing quantum education, research, and innovation through community and collaboration.</p>
+        
       </div>
 
       <div class="space-y-4">
@@ -25,42 +25,20 @@ import site from '../../data/site.json';
         </ul>
       </div>
 
-      <div class="space-y-4">
-        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-cyan-quantum">Resources</p>
-        <ul class="space-y-3 text-sm text-slate-400">
-          <li>Blog Coming Soon</li>
-          <li>Resources Coming Soon</li>
-        </ul>
-      </div>
+      
 
       <div class="space-y-4">
         <p class="text-sm font-semibold uppercase tracking-[0.3em] text-cyan-quantum">Contact Us</p>
         <div class="space-y-3 text-sm text-slate-400">
           <a class="flex items-center gap-3 transition hover:text-white" href="mailto:quantuminitiative.ku@gmail.com">
-            <span class="text-cyan-quantum text-xl">✉</span>
+            <span class="inline-flex h-6 w-6 items-center justify-center text-cyan-quantum">✉</span>
             <span>quantuminitiative.ku@gmail.com</span>
           </a>
           <div class="flex items-center gap-3">
-            <span class="text-cyan-quantum text-xl">📍</span>
-            <span>Global Community</span>
+            <span class="inline-flex h-6 w-6 items-center justify-center text-cyan-quantum">📍</span>
+            <span>Khalifa University Abu Dhabi</span>
           </div>
-          <div class="mt-4 flex items-center gap-4">
-            <a href="https://www.instagram.com/quantum.computing_ku?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" aria-label="Instagram" class="text-slate-400 transition hover:text-white" target="_blank" rel="noreferrer">
-              <svg viewBox="0 0 24 24" class="h-6 w-6 fill-current" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5A4.25 4.25 0 0 0 20.5 16.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5Zm8.86 2.4a.9.9 0 1 1 0 1.8.9.9 0 0 1 0-1.8ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 1.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z" />
-              </svg>
-            </a>
-            <a href="https://www.linkedin.com/company/ku-qci/?viewAsMember=true" aria-label="LinkedIn" class="text-slate-400 transition hover:text-white" target="_blank" rel="noreferrer">
-              <svg viewBox="0 0 24 24" class="h-6 w-6 fill-current" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4.98 3.5a2.5 2.5 0 1 1-.01 5.001A2.5 2.5 0 0 1 4.98 3.5ZM3 9h3.96V21H3V9Zm7.5 0h3.79v1.68h.05c.53-1 1.82-2.06 3.74-2.06 4 0 4.75 2.63 4.75 6.05V21h-3.96v-5.12c0-1.22-.02-2.78-1.7-2.78-1.71 0-1.97 1.34-1.97 2.72V21H10.5V9Z" />
-              </svg>
-            </a>
-            <a href={site.githubUrl} aria-label="GitHub" class="text-slate-400 transition hover:text-white">
-              <svg viewBox="0 0 24 24" class="h-6 w-6 fill-current" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48 0-.24-.01-.87-.01-1.7-2.77.6-3.36-1.34-3.36-1.34-.45-1.15-1.1-1.46-1.1-1.46-.9-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.99 1.03-2.69-.1-.26-.45-1.31.1-2.73 0 0 .84-.27 2.75 1.03A9.56 9.56 0 0 1 12 6.8c.85.003 1.7.11 2.5.32 1.9-1.3 2.74-1.03 2.74-1.03.55 1.42.2 2.47.1 2.73.64.7 1.03 1.6 1.03 2.69 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.86 0 1.34-.01 2.42-.01 2.75 0 .27.18.58.69.48A10 10 0 0 0 12 2Z" />
-              </svg>
-            </a>
-          </div>
+
         </div>
       </div>
     </div>
