@@ -23,6 +23,9 @@ import site from '../data/site.json';
       content="Quantum Computing Initiative at Khalifa University. Learn quantum. Build quantum. Contribute to the ecosystem."
     />
     <title>Quantum Computing Initiative</title>
+    <script is:inline>
+      document.documentElement.classList.add('supports-scroll-reveal');
+    </script>
   </head>
   <body>
     <Navbar home />
@@ -31,12 +34,14 @@ import site from '../data/site.json';
 
       <section id="mission" class="py-24">
         <div class="section-shell">
-          <SectionHeader
-            eyebrow="Our mission"
-            title="Our mission"
-            copy="QCI exists to make quantum computing accessible, practical, and collaborative. Through events, education, and open-source development, we help students move from first concepts to real contributions."
-          />
-          <div class="mt-10">
+          <div data-scroll-reveal="section">
+            <SectionHeader
+              eyebrow="Our mission"
+              title="Our mission"
+              copy="QCI exists to make quantum computing accessible, practical, and collaborative. Through events, education, and open-source development, we help students move from first concepts to real contributions."
+            />
+          </div>
+          <div class="mt-10" data-scroll-reveal style="--reveal-delay: 120ms">
             <MissionCards />
           </div>
         </div>
@@ -47,7 +52,7 @@ import site from '../data/site.json';
 
       <section id="contact" class="py-24">
         <div class="section-shell">
-          <div class="overflow-hidden rounded-[2rem] border border-cyan-quantum/15 bg-ink/75 p-8 shadow-blue-glow backdrop-blur-xl md:p-12">
+          <div class="overflow-hidden rounded-[2rem] border border-cyan-quantum/15 bg-ink/75 p-8 shadow-blue-glow backdrop-blur-xl md:p-12" data-scroll-reveal="section">
             <div class="grid gap-8 lg:grid-cols-[minmax(0,1.75fr)_minmax(0,0.9fr)] lg:items-center">
               <div>
                 <p class="text-sm font-semibold uppercase tracking-[0.35em] text-cyan-quantum">Contact us</p>
@@ -66,5 +71,30 @@ import site from '../data/site.json';
       <EndCard />
     </main>
     <Footer />
+    <script is:inline>
+      const revealItems = Array.from(document.querySelectorAll('[data-scroll-reveal]'));
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (!('IntersectionObserver' in window) || prefersReducedMotion) {
+        revealItems.forEach((item) => item.setAttribute('data-reveal-visible', 'true'));
+      } else {
+        const revealObserver = new IntersectionObserver(
+          (entries, observer) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+
+              entry.target.setAttribute('data-reveal-visible', 'true');
+              observer.unobserve(entry.target);
+            });
+          },
+          {
+            rootMargin: '0px 0px -14% 0px',
+            threshold: 0.12
+          }
+        );
+
+        revealItems.forEach((item) => revealObserver.observe(item));
+      }
+    </script>
   </body>
 </html>

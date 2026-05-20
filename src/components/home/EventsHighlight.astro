@@ -9,25 +9,29 @@ const features = ['Workshops', 'Hackathons', 'Speaker sessions', 'Bootcamps', 'P
 <section class="py-24">
   <div class="section-shell">
     <div class="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
-      <SectionHeader
-        eyebrow="Events"
-        title="Events: where quantum becomes accessible"
-        copy="From beginner workshops to hackathons, our events team creates spaces where people can learn, experiment, and collaborate on quantum ideas."
-      />
+      <div data-scroll-reveal="section">
+        <SectionHeader
+          eyebrow="Events"
+          title="Events: where quantum becomes accessible"
+          copy="From beginner workshops to hackathons, our events team creates spaces where people can learn, experiment, and collaborate on quantum ideas."
+        />
+      </div>
       <div class="grid gap-4 sm:grid-cols-2">
         {
-          features.map((feature) => (
-            <Card class="p-5">
-              <div class="flex items-center gap-3">
-                <span class="h-2.5 w-2.5 rounded-full bg-cyan-quantum shadow-blue-glow" aria-hidden="true" />
-                <h3 class="font-semibold text-white">{feature}</h3>
-              </div>
-            </Card>
+          features.map((feature, index) => (
+            <div data-scroll-reveal style={`--reveal-delay: ${120 + index * 70}ms`}>
+              <Card class="h-full p-5">
+                <div class="flex items-center gap-3">
+                  <span class="h-2.5 w-2.5 rounded-full bg-cyan-quantum shadow-blue-glow" aria-hidden="true" />
+                  <h3 class="font-semibold text-white">{feature}</h3>
+                </div>
+              </Card>
+            </div>
           ))
         }
       </div>
     </div>
-    <div class="mt-8">
+    <div class="mt-8" data-scroll-reveal style="--reveal-delay: 220ms">
       <Button href="/events" variant="secondary">Explore Events -&gt;</Button>
     </div>
   </div>

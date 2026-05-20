@@ -5,8 +5,10 @@ import SectionHeader from '../shared/SectionHeader.astro';
 
 <section id="sponsors" class="py-24">
   <div class="section-shell">
-    <SectionHeader eyebrow="Sponsors" title="Supported by" />
-    <div class="mt-8">
+    <div data-scroll-reveal="section">
+      <SectionHeader eyebrow="Sponsors" title="Supported by" />
+    </div>
+    <div class="mt-8" data-scroll-reveal style="--reveal-delay: 120ms">
       <nav class="flex items-center justify-center gap-10 flex-wrap">
         {
           sponsors

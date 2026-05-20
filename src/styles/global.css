@@ -107,3 +107,34 @@ a {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+html.supports-scroll-reveal [data-scroll-reveal] {
+  opacity: 0;
+  filter: blur(10px);
+  transform: translate3d(0, 28px, 0) scale(0.985);
+  transition:
+    opacity 850ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 850ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 850ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, filter, transform;
+}
+
+html.supports-scroll-reveal [data-scroll-reveal='section'] {
+  transform: translate3d(0, 36px, 0) scale(0.985);
+}
+
+html.supports-scroll-reveal [data-scroll-reveal][data-reveal-visible='true'] {
+  opacity: 1;
+  filter: blur(0);
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.supports-scroll-reveal [data-scroll-reveal] {
+    opacity: 1;
+    filter: none;
+    transform: none;
+    transition: none;
+  }
+}

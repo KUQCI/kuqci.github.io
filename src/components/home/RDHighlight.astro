@@ -23,30 +23,34 @@ const previews = [
 
 <section class="py-24">
   <div class="section-shell">
-    <SectionHeader
-      eyebrow="R&D"
-      title="R&D: where ideas become open-source contributions"
-      copy="Our R&D team develops open-source projects and research prototypes that contribute to the quantum ecosystem while giving students hands-on technical experience."
-    />
+    <div data-scroll-reveal="section">
+      <SectionHeader
+        eyebrow="R&D"
+        title="R&D: where ideas become open-source contributions"
+        copy="Our R&D team develops open-source projects and research prototypes that contribute to the quantum ecosystem while giving students hands-on technical experience."
+      />
+    </div>
 
     <div class="mt-10 grid gap-5 lg:grid-cols-3">
       {
-        previews.map((preview) => (
-          <article class="rounded-2xl border border-cyan-quantum/16 bg-surface/80 p-5 shadow-blue-glow">
-            <div class="flex items-start justify-between gap-4">
-              <p class="mono-label text-sm text-cyan-quantum">{preview.repo}</p>
-              <span class="mono-label rounded-full border border-gold-duck/30 px-2.5 py-1 text-[0.65rem] uppercase text-gold-duck">
-                {preview.status}
-              </span>
-            </div>
-            <p class="mt-7 leading-7 text-slate-300">{preview.copy}</p>
-            <div class="mt-6 h-px bg-gradient-to-r from-cyan-quantum/0 via-cyan-quantum/35 to-cyan-quantum/0" />
-          </article>
+        previews.map((preview, index) => (
+          <div data-scroll-reveal style={`--reveal-delay: ${120 + index * 90}ms`}>
+            <article class="h-full rounded-2xl border border-cyan-quantum/16 bg-surface/80 p-5 shadow-blue-glow">
+              <div class="flex items-start justify-between gap-4">
+                <p class="mono-label text-sm text-cyan-quantum">{preview.repo}</p>
+                <span class="mono-label rounded-full border border-gold-duck/30 px-2.5 py-1 text-[0.65rem] uppercase text-gold-duck">
+                  {preview.status}
+                </span>
+              </div>
+              <p class="mt-7 leading-7 text-slate-300">{preview.copy}</p>
+              <div class="mt-6 h-px bg-gradient-to-r from-cyan-quantum/0 via-cyan-quantum/35 to-cyan-quantum/0" />
+            </article>
+          </div>
         ))
       }
     </div>
 
-    <div class="mt-8">
+    <div class="mt-8" data-scroll-reveal style="--reveal-delay: 240ms">
       <Button href="/rd">View R&D Projects -&gt;</Button>
     </div>
   </div>
