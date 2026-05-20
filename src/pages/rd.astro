@@ -9,36 +9,24 @@ import RDHero from '../components/rd/RDHero.astro';
 import ResearchTrackCard from '../components/rd/ResearchTrackCard.astro';
 import ProjectCard from '../components/rd/ProjectCard.astro';
 import ContributionPath from '../components/rd/ContributionPath.astro';
-import ResearchNotes from '../components/rd/ResearchNotes.astro';
 import site from '../data/site.json';
 
 const tracks = [
   {
-    title: 'Quantum Algorithms',
-    copy: 'Exploring foundational algorithms, circuit design, and educational implementations.'
+    title: 'Quantum Machine Learning',
+    copy: 'Exploring how quantum models outperform classical models.'
   },
   {
-    title: 'Quantum Simulation',
-    copy: 'Building tools and demos for simulating quantum systems and circuits.'
+    title: 'Quantum Circuit Profiling',
+    copy: 'Building tools for quantum circuit research and development.'
   },
   {
-    title: 'Error Mitigation',
-    copy: 'Investigating noise, decoherence, and practical strategies for NISQ-era devices.'
+    title: 'Quantum Chemistry',
+    copy: 'Investigating quantum algorithms for chemical applications.'
   },
-  {
-    title: 'Quantum Education Tools',
-    copy: 'Creating interactive resources that make quantum computing easier to learn.'
-  },
-  {
-    title: 'Optimization',
-    copy: 'Exploring quantum and quantum-inspired approaches to optimization problems.'
-  }
 ];
 
 const projects = await getCollection('projects');
-const researchNotes = (await getCollection('research')).sort((a, b) => {
-  return new Date(b.data.date ?? '1970-01-01').getTime() - new Date(a.data.date ?? '1970-01-01').getTime();
-});
 ---
 
 <!doctype html>
@@ -48,7 +36,7 @@ const researchNotes = (await getCollection('research')).sort((a, b) => {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="QCI R&D projects, research tracks, research notes, and open-source contribution pathway."
+      content="QCI R&D projects, research tracks, and open-source contribution pathway."
     />
     <title>R&D | QCI</title>
   </head>
@@ -84,22 +72,13 @@ const researchNotes = (await getCollection('research')).sort((a, b) => {
         </div>
       </section>
 
-      <section class="py-20">
-        <div class="section-shell">
-          <SectionHeader eyebrow="Notes" title="Research notes" />
-          <div class="mt-10">
-            <ResearchNotes notes={researchNotes} />
-          </div>
-        </div>
-      </section>
-
       <section class="pb-24">
         <div class="section-shell">
           <div class="rounded-2xl border border-gold-duck/25 bg-surface-2 p-8 shadow-gold-glow md:p-10">
             <p class="mono-label mb-3 text-xs uppercase text-gold-duck">R&D onboarding</p>
             <h2 class="text-3xl font-semibold text-white">Join the R&D team</h2>
             <p class="mt-4 max-w-2xl leading-8 text-slate-300">
-              Bring a project idea, pick up a good first issue, or help turn research notes into useful tools.
+              Bring a project idea, pick up a good first issue, or help turn research prototypes into useful tools.
             </p>
             <div class="mt-7 flex flex-col gap-3 sm:flex-row">
               <Button href={site.joinUrl}>Join R&D</Button>
