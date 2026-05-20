@@ -7,13 +7,17 @@ interface Props {
 }
 
 const { home = false } = Astro.props;
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+const withBase = (path: string) => `${basePath}${path}`;
 const links = [
-  { label: 'About', href: home ? '#mission' : '/#mission' },
-  { label: 'Events', href: '/events' },
-  { label: 'R&D', href: '/rd' },
-  { label: 'Sponsors', href: home ? '#sponsors' : '/#sponsors' },
-  { label: 'Contact', href: home ? '#contact' : '/#contact' }
+  { label: 'About', href: home ? '#mission' : withBase('/#mission') },
+  { label: 'Events', href: withBase('/events') },
+  { label: 'R&D', href: withBase('/rd') },
+  { label: 'Sponsors', href: home ? '#sponsors' : withBase('/#sponsors') },
+  { label: 'Contact', href: home ? '#contact' : withBase('/#contact') }
 ];
+const homeHref = withBase('/');
+const logoSrc = withBase('/logo.png');
 ---
 
 {
@@ -30,8 +34,8 @@ const links = [
 >
   <div class="mx-auto max-w-6xl rounded-2xl border border-cyan-quantum/20 bg-ink/72 shadow-blue-glow backdrop-blur-xl">
     <nav class="flex items-center justify-between px-4 py-3 md:px-5" aria-label="Primary navigation">
-      <a href="/" class="group flex items-center gap-3" aria-label="Quantum Computing Initiative home">
-        <img src="/logo.png" alt={`${site.shortName} logo`} class="h-10 w-10 rounded-full border border-cyan-quantum/20 bg-ink/35 object-cover transition group-hover:scale-105" />
+      <a href={homeHref} class="group flex items-center gap-3" aria-label="Quantum Computing Initiative home">
+        <img src={logoSrc} alt={`${site.shortName} logo`} class="h-10 w-10 rounded-full border border-cyan-quantum/20 bg-ink/35 object-cover transition group-hover:scale-105" />
         <span class="hidden leading-tight sm:block">
           <span class="block text-sm font-semibold text-white">{site.name}</span>
           <span class="mono-label mt-1 block text-[0.68rem] text-slate-400">{site.affiliation}</span>
