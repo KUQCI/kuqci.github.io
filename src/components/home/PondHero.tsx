@@ -29,7 +29,7 @@ const sphereOrbitals = [
     stroke: '#7dd3fc',
     strokeOpacity: 0.36,
     baseAngle: 18,
-    duration: 27,
+    duration: 44,
     direction: 1
   },
   {
@@ -38,7 +38,7 @@ const sphereOrbitals = [
     stroke: '#2f80ed',
     strokeOpacity: 0.28,
     baseAngle: -48,
-    duration: 38,
+    duration: 58,
     direction: -1
   },
   {
@@ -47,7 +47,7 @@ const sphereOrbitals = [
     stroke: '#7dd3fc',
     strokeOpacity: 0.22,
     baseAngle: 78,
-    duration: 46,
+    duration: 70,
     direction: 1
   },
   {
@@ -56,7 +56,7 @@ const sphereOrbitals = [
     stroke: '#2f80ed',
     strokeOpacity: 0.24,
     baseAngle: -82,
-    duration: 31,
+    duration: 50,
     direction: -1
   }
 ] as const satisfies readonly SphereOrbital[];
@@ -239,30 +239,31 @@ export default function PondHero() {
               animate={{ opacity: 1 }}
               transition={{ delay: reduceMotion ? 0 : 0.35, duration: reduceMotion ? 0 : 1 }}
             >
-              {[0, 1, 2, 3].map((ring) => (
+              {[0, 1, 2].map((ring) => (
                 <motion.ellipse
                   key={ring}
                   cx="360"
                   cy="392"
-                  rx={140 + ring * 44}
-                  ry={34 + ring * 9}
+                  rx="48"
+                  ry="12"
                   fill="none"
                   stroke={ring === 1 ? '#7dd3fc' : '#2f80ed'}
-                  strokeOpacity={0.42 - ring * 0.07}
+                  strokeOpacity={0.34}
                   strokeWidth="1.4"
                   animate={
                     reduceMotion
                       ? {}
                       : {
-                          rx: [140 + ring * 44, 150 + ring * 46, 140 + ring * 44],
-                          opacity: [0.38, 0.16, 0.38]
+                          rx: [48, 220],
+                          ry: [12, 56],
+                          opacity: [0, 0.42, 0.18, 0]
                         }
                   }
                   transition={{
-                    duration: 4.5 + ring,
+                    duration: 10.0,
                     repeat: Infinity,
-                    delay: ring * 0.3,
-                    ease: 'easeInOut'
+                    delay: -(ring * 3.33),
+                    ease: 'linear'
                   }}
                 />
               ))}
@@ -419,7 +420,7 @@ export default function PondHero() {
             className="absolute inset-x-0 bottom-0 mx-auto max-w-3xl px-4 text-center md:bottom-3"
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: reduceMotion ? 0 : 1.25, duration: reduceMotion ? 0 : 0.8 }}
+            transition={{ delay: reduceMotion ? 0 : 1.9, duration: reduceMotion ? 0 : 0.8 }}
           >
             <p className="mono-label mb-4 text-xs font-semibold uppercase text-cyan-quantum/80">
               Khalifa University

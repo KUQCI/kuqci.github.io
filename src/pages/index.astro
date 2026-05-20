@@ -3,7 +3,6 @@ import '../styles/global.css';
 import Navbar from '../components/shared/Navbar.astro';
 import Footer from '../components/shared/Footer.astro';
 import SectionHeader from '../components/shared/SectionHeader.astro';
-import Card from '../components/shared/Card.astro';
 import Button from '../components/shared/Button.astro';
 import PondHero from '../components/home/PondHero';
 import MissionCards from '../components/home/MissionCards.astro';
@@ -12,14 +11,6 @@ import RDHighlight from '../components/home/RDHighlight.astro';
 import SponsorStrip from '../components/home/SponsorStrip.astro';
 import EndCard from '../components/home/EndCard.astro';
 import site from '../data/site.json';
-
-const entryPoints = [
-  { title: 'Attend an event', href: '/events', copy: 'Start with a workshop, talk, hackathon, or showcase.' },
-  { title: 'Join the events team', href: site.joinUrl, copy: 'Help shape beginner-friendly learning experiences.' },
-  { title: 'Contribute to R&D', href: '/rd', copy: 'Pick an open-source project and build with the team.' },
-  { title: 'Partner with us', href: `mailto:${site.contactEmail}`, copy: 'Collaborate on talks, mentoring, or technical programming.' },
-  { title: 'Sponsor an initiative', href: `mailto:${site.contactEmail}`, copy: 'Support workshops, hackathons, prototypes, and student contributors.' }
-];
 ---
 
 <!doctype html>
