@@ -51,7 +51,7 @@ export default function EventTimeline({
       <div className="mb-5 flex items-center justify-between gap-4">
         <div>
           <p className="mono-label text-xs uppercase text-cyan-quantum/75">timeline</p>
-          <h2 className="mt-2 text-2xl font-semibold text-white">Chronological signal</h2>
+          <h2 className="mt-2 text-2xl font-semibold text-white">Schedule</h2>
         </div>
         <div className="flex gap-2">
           <button
