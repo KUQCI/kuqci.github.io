@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import EventCalendar from './EventCalendar';
-import EventDetails from './EventDetails';
 import EventTimeline from './EventTimeline';
 import { eventMonthKey, monthKey, toLocalDate, type EventType, type SerializedEvent } from './types';
 
@@ -63,7 +62,7 @@ export default function EventsExperience({ events }: EventsExperienceProps) {
   };
 
   return (
-    <div className="grid gap-8">
+    <div className="grid min-w-0 max-w-full gap-8 overflow-hidden">
       <div className="flex flex-wrap gap-2" aria-label="Event filters">
         {(['All', ...eventTypes] as Array<EventType | 'All'>).map((type) => (
           <button
@@ -91,16 +90,13 @@ export default function EventsExperience({ events }: EventsExperienceProps) {
         onPrevious={() => selectAdjacent(-1)}
       />
 
-      <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-        <EventCalendar
-          events={filteredEvents}
-          selectedEvent={selectedEvent}
-          visibleMonth={visibleMonth}
-          onMonthChange={changeMonth}
-          onSelect={selectEvent}
-        />
-        <EventDetails event={selectedEvent} />
-      </div>
+      <EventCalendar
+        events={filteredEvents}
+        selectedEvent={selectedEvent}
+        visibleMonth={visibleMonth}
+        onMonthChange={changeMonth}
+        onSelect={selectEvent}
+      />
     </div>
   );
 }

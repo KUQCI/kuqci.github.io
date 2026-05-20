@@ -8,7 +8,7 @@ export default function EventDetails({ event }: EventDetailsProps) {
   const past = isPastEvent(event);
 
   return (
-    <aside className="rounded-2xl border border-gold-duck/20 bg-gradient-to-br from-surface-2 to-ink p-6 shadow-gold-glow">
+    <aside className="min-w-0 max-w-full rounded-2xl border border-gold-duck/20 bg-gradient-to-br from-surface-2 to-ink p-5 shadow-gold-glow sm:p-6">
       <div className="flex flex-wrap items-center gap-2">
         <span className="mono-label rounded-full border border-blue-qci/35 px-2.5 py-1 text-xs uppercase text-cyan-quantum">
           {event.type}
@@ -23,7 +23,7 @@ export default function EventDetails({ event }: EventDetailsProps) {
         )}
       </div>
 
-      <h2 className="mt-5 text-3xl font-semibold text-white">{event.title}</h2>
+      <h2 className="mt-5 break-words text-3xl font-semibold text-white">{event.title}</h2>
       <dl className="mt-6 grid gap-3 text-sm text-slate-300">
         <div className="flex justify-between gap-4 border-t border-cyan-quantum/10 pt-3">
           <dt className="text-slate-500">Date</dt>
@@ -35,11 +35,11 @@ export default function EventDetails({ event }: EventDetailsProps) {
         </div>
         <div className="flex justify-between gap-4 border-t border-cyan-quantum/10 pt-3">
           <dt className="text-slate-500">Location</dt>
-          <dd className="text-right">{event.location}</dd>
+          <dd className="min-w-0 break-words text-right">{event.location}</dd>
         </div>
       </dl>
 
-      <p className="mt-6 leading-8 text-slate-300">{event.summary}</p>
+      <p className="mt-6 break-words leading-8 text-slate-300">{event.summary}</p>
 
       <div className="mt-5 flex flex-wrap gap-2">
         {event.tags.map((tag) => (

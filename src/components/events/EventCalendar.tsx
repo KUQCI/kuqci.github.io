@@ -44,7 +44,7 @@ export default function EventCalendar({
   const cells = getCalendarCells(visibleMonth);
 
   return (
-    <section className="rounded-2xl border border-cyan-quantum/14 bg-surface/70 p-5" aria-label="Event calendar">
+    <section className="min-w-0 max-w-full overflow-hidden rounded-2xl border border-cyan-quantum/14 bg-surface/70 p-3 sm:p-5" aria-label="Event calendar">
       <div className="mb-5 flex items-center justify-between gap-4">
         <div>
           <p className="mono-label text-xs uppercase text-cyan-quantum/75">calendar</p>
@@ -70,7 +70,7 @@ export default function EventCalendar({
         </div>
       </div>
 
-      <div className="grid grid-cols-7 gap-2 text-center">
+      <div className="grid min-w-0 grid-cols-7 gap-1 text-center sm:gap-2">
         {weekdays.map((day) => (
           <div key={day} className="mono-label py-2 text-[0.68rem] uppercase text-slate-500">
             {day}
@@ -89,7 +89,7 @@ export default function EventCalendar({
               <div
                 key={dateKey}
                 className={[
-                  'min-h-16 rounded-xl border border-transparent p-2 text-sm',
+                  'min-h-14 rounded-xl border border-transparent p-1.5 text-sm sm:min-h-16 sm:p-2',
                   inMonth ? 'text-slate-500' : 'text-slate-700'
                 ].join(' ')}
               >
@@ -107,7 +107,7 @@ export default function EventCalendar({
               type="button"
               onClick={() => onSelect(primaryEvent.slug)}
               className={[
-                'relative min-h-16 rounded-xl border p-2 text-left text-sm transition hover:border-gold-duck/45',
+                'relative min-h-14 rounded-xl border p-1.5 text-left text-sm transition hover:border-gold-duck/45 sm:min-h-16 sm:p-2',
                 selected
                   ? 'animate-pulse border-cyan-quantum bg-gold-duck/10 text-white'
                   : 'border-cyan-quantum/20 bg-blue-qci/5 text-slate-200',

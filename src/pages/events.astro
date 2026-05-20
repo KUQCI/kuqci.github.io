@@ -29,7 +29,7 @@ const events: SerializedEvent[] = eventEntries
   </head>
   <body>
     <Navbar />
-    <main class="pt-32">
+    <main class="overflow-x-hidden pt-32">
       <section class="pb-14">
         <div class="section-shell">
           <SectionHeader
@@ -40,8 +40,8 @@ const events: SerializedEvent[] = eventEntries
         </div>
       </section>
 
-      <section class="pb-24">
-        <div class="section-shell">
+      <section class="overflow-x-hidden pb-24">
+        <div class="section-shell min-w-0">
           <EventsExperience events={events} client:load />
         </div>
       </section>
