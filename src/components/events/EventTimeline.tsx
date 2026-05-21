@@ -124,7 +124,7 @@ export default function EventTimeline({
                         type="button"
                         onClick={() => onSelect(event.slug)}
                         className="rounded-full border border-cyan-quantum/25 px-3 py-1.5 text-xs font-semibold text-cyan-quantum transition hover:border-gold-duck/50 hover:text-gold-duck"
-                        aria-label={`Select ${event.title}, ${formatEventDate(event.date)}`}
+                        aria-label={`Select ${event.title}, ${formatEventDate(event.date, event.endDate)}`}
                       >
                         Select
                       </button>
@@ -134,7 +134,7 @@ export default function EventTimeline({
                   <dl className="mt-6 grid gap-3 text-sm text-slate-300">
                     <div className="flex justify-between gap-4 border-t border-cyan-quantum/10 pt-3">
                       <dt className="text-slate-500">Date</dt>
-                      <dd className="text-right">{formatEventDate(event.date)}</dd>
+                      <dd className="text-right">{formatEventDate(event.date, event.endDate)}</dd>
                     </div>
                     <div className="flex justify-between gap-4 border-t border-cyan-quantum/10 pt-3">
                       <dt className="text-slate-500">Time</dt>

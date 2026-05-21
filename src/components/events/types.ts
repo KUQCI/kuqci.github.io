@@ -7,6 +7,7 @@ export interface SerializedEvent {
   title: string;
   type: EventType;
   date: string;
+  endDate?: string;
   startTime: string;
   endTime?: string;
   location: string;
@@ -30,13 +31,32 @@ export function eventMonthKey(event: SerializedEvent) {
   return monthKey(toLocalDate(event.date));
 }
 
-export function formatEventDate(date: string) {
-  return new Intl.DateTimeFormat('en', {
+export function formatEventDate(date: string, endDate?: string) {
+  const startDate = toLocalDate(date);
+
+  if (!endDate) {
+    return new Intl.DateTimeFormat('en', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    }).format(startDate);
+  }
+
+  const end = toLocalDate(endDate);
+  const formattedStart = new Intl.DateTimeFormat('en', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric'
+  }).format(startDate);
+  const formattedEnd = new Intl.DateTimeFormat('en', {
     weekday: 'short',
     month: 'short',
     day: 'numeric',
     year: 'numeric'
-  }).format(toLocalDate(date));
+  }).format(end);
+
+  return `${formattedStart} – ${formattedEnd}`;
 }
 
 export function formatMonth(date: Date) {

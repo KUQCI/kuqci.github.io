@@ -32,6 +32,10 @@ function getCalendarCells(month: Date) {
   });
 }
 
+function eventOccursOnDate(event: SerializedEvent, dateKey: string) {
+  return event.date === dateKey || event.endDate === dateKey;
+}
+
 export default function EventCalendar({
   events,
   selectedEvent,
@@ -80,9 +84,9 @@ export default function EventCalendar({
           const dateKey = `${cell.getFullYear()}-${String(cell.getMonth() + 1).padStart(2, '0')}-${String(
             cell.getDate()
           ).padStart(2, '0')}`;
-          const dayEvents = monthEvents.filter((event) => event.date === dateKey);
+          const dayEvents = monthEvents.filter((event) => eventOccursOnDate(event, dateKey));
           const inMonth = cell.getMonth() === visibleMonth.getMonth();
-          const selected = selectedDate === dateKey;
+          const selected = selectedDate === dateKey || selectedEvent.endDate === dateKey;
 
           if (dayEvents.length === 0) {
             return (
@@ -117,13 +121,13 @@ export default function EventCalendar({
             >
               <span className="font-semibold">{cell.getDate()}</span>
               <span className="mt-2 flex items-center gap-1.5">
-                {dayEvents.slice(0, 3).map((event) => (
-                  <span
-                    key={event.slug}
-                    className={event.date === selectedDate ? 'h-2 w-2 rounded-full bg-gold-duck' : 'h-2 w-2 rounded-full bg-cyan-quantum'}
-                    aria-hidden="true"
-                  />
-                ))}
+                    {dayEvents.slice(0, 3).map((event) => (
+                      <span
+                        key={event.slug}
+                        className={selected ? 'h-2 w-2 rounded-full bg-gold-duck' : 'h-2 w-2 rounded-full bg-cyan-quantum'}
+                        aria-hidden="true"
+                      />
+                    ))}
               </span>
               <span className="sr-only">{dayEvents.map((event) => `${event.type}: ${event.title}`).join(', ')}</span>
             </button>

@@ -8,6 +8,7 @@ const events = defineCollection({
     date: z.string(),
     startTime: z.string(),
     endTime: z.string().optional(),
+    endDate: z.string().optional(),
     location: z.string(),
     difficulty: z.enum(['Beginner', 'Intermediate', 'Advanced']).optional(),
     status: z.enum(['Upcoming', 'Past', 'Registration Open']),

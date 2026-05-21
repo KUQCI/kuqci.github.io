@@ -27,7 +27,7 @@ export default function EventDetails({ event }: EventDetailsProps) {
       <dl className="mt-6 grid gap-3 text-sm text-slate-300">
         <div className="flex justify-between gap-4 border-t border-cyan-quantum/10 pt-3">
           <dt className="text-slate-500">Date</dt>
-          <dd className="text-right">{formatEventDate(event.date)}</dd>
+          <dd className="text-right">{formatEventDate(event.date, event.endDate)}</dd>
         </div>
         <div className="flex justify-between gap-4 border-t border-cyan-quantum/10 pt-3">
           <dt className="text-slate-500">Time</dt>
