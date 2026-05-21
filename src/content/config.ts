@@ -4,10 +4,11 @@ const events = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
-    type: z.enum(['Workshop', 'Hackathon', 'Talk', 'Bootcamp', 'Showcase']),
+    type: z.enum(['Workshop', 'Hackathon', 'Talk', 'Bootcamp', 'Showcase', 'Booth']),
     date: z.string(),
     startTime: z.string(),
     endTime: z.string().optional(),
+    timeLabel: z.string().optional(),
     endDate: z.string().optional(),
     location: z.string(),
     difficulty: z.enum(['Beginner', 'Intermediate', 'Advanced']).optional(),

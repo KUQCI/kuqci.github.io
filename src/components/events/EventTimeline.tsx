@@ -138,7 +138,7 @@ export default function EventTimeline({
                     </div>
                     <div className="flex justify-between gap-4 border-t border-cyan-quantum/10 pt-3">
                       <dt className="text-slate-500">Time</dt>
-                      <dd>{formatEventTime(event)}</dd>
+                      <dd className="min-w-0 break-words text-right">{formatEventTime(event)}</dd>
                     </div>
                     <div className="flex justify-between gap-4 border-t border-cyan-quantum/10 pt-3">
                       <dt className="text-slate-500">Location</dt>

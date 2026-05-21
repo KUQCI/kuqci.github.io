@@ -1,4 +1,4 @@
-export type EventType = 'Workshop' | 'Hackathon' | 'Talk' | 'Bootcamp' | 'Showcase';
+export type EventType = 'Workshop' | 'Hackathon' | 'Talk' | 'Bootcamp' | 'Showcase' | 'Booth';
 export type EventStatus = 'Upcoming' | 'Past' | 'Registration Open';
 export type EventDifficulty = 'Beginner' | 'Intermediate' | 'Advanced';
 
@@ -10,6 +10,7 @@ export interface SerializedEvent {
   endDate?: string;
   startTime: string;
   endTime?: string;
+  timeLabel?: string;
   location: string;
   difficulty?: EventDifficulty;
   status: EventStatus;
@@ -67,6 +68,10 @@ export function formatMonth(date: Date) {
 }
 
 export function formatEventTime(event: SerializedEvent) {
+  if (event.timeLabel) {
+    return event.timeLabel;
+  }
+
   return event.endTime ? `${event.startTime} - ${event.endTime}` : event.startTime;
 }
 
