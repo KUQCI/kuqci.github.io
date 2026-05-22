@@ -1,4 +1,4 @@
-export type EventType = 'Workshop' | 'Hackathon' | 'Talk' | 'Bootcamp' | 'Showcase' | 'Booth';
+export type EventType = 'Workshop' | 'Hackathon' | 'Talk' | 'Bootcamp' | 'Showcase';
 export type EventStatus = 'Upcoming' | 'Past' | 'Registration Open';
 export type EventDifficulty = 'Beginner' | 'Intermediate' | 'Advanced';
 

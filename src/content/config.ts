@@ -4,7 +4,7 @@ const events = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
-    type: z.enum(['Workshop', 'Hackathon', 'Talk', 'Bootcamp', 'Showcase', 'Booth']),
+    type: z.enum(['Workshop', 'Hackathon', 'Talk', 'Bootcamp', 'Showcase']),
     date: z.string(),
     startTime: z.string(),
     endTime: z.string().optional(),
@@ -25,7 +25,7 @@ const projects = defineCollection({
     name: z.string(),
     repo: z.string(),
     status: z.enum(['Active', 'Prototype', 'Planning', 'Paused', 'Looking for Contributors']),
-    difficulty: z.enum(['Beginner', 'Intermediate', 'Advanced']),
+    difficulty: z.enum(['Beginner', 'Intermediate', 'Advanced', 'Intermediate-Advanced']),
     stack: z.array(z.string()),
     researchArea: z.string(),
     githubUrl: z.string().url(),

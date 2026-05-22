@@ -1,19 +1,20 @@
 ---
 const steps = [
-  'Pick a project.',
-  'Read the project brief.',
-  'Choose a good first issue.',
-  'Build and submit a pull request.'
+  'Join QCI and share your interests.',
+  'Explore the project areas and choose a direction.',
+  'Align with the team on a small, well-scoped task.',
+  'Build a prototype, note, or software contribution.',
+  'Share the result for feedback, publication, or a pull request.'
 ];
 ---
 
 <div class="relative">
   <div class="mb-8 overflow-x-auto rounded-2xl border border-cyan-quantum/14 bg-surface/50 p-5">
     <p class="mono-label whitespace-nowrap text-sm text-cyan-quantum">
-      |0&gt; Start -&gt; Explore repo -&gt; Claim issue -&gt; Build -&gt; Pull request
+      |0&gt; Join QCI -&gt; Explore -&gt; Scope -&gt; Build -&gt; Share
     </p>
   </div>
-  <div class="grid gap-4 md:grid-cols-3">
+  <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
     {
       steps.map((step, index) => (
         <article class="rounded-2xl border border-cyan-quantum/14 bg-surface/70 p-5">

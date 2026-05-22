@@ -4,12 +4,10 @@ import { getCollection } from 'astro:content';
 import Navbar from '../components/shared/Navbar.astro';
 import Footer from '../components/shared/Footer.astro';
 import SectionHeader from '../components/shared/SectionHeader.astro';
-import Button from '../components/shared/Button.astro';
 import RDHero from '../components/rd/RDHero.astro';
 import ResearchTrackCard from '../components/rd/ResearchTrackCard.astro';
 import ProjectCard from '../components/rd/ProjectCard.astro';
 import ContributionPath from '../components/rd/ContributionPath.astro';
-import site from '../data/site.json';
 
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
 const faviconHref = `${basePath}/favicon.ico?v=3`;
@@ -31,7 +29,17 @@ const tracks = [
   },
 ];
 
-const projects = await getCollection('projects');
+const projectOrder = ['QML-Molecular-Classification'];
+const projects = (await getCollection('projects')).sort((a, b) => {
+  const aIndex = projectOrder.indexOf(a.data.name);
+  const bIndex = projectOrder.indexOf(b.data.name);
+
+  if (aIndex !== -1 || bIndex !== -1) {
+    return (aIndex === -1 ? projectOrder.length : aIndex) - (bIndex === -1 ? projectOrder.length : bIndex);
+  }
+
+  return a.data.name.localeCompare(b.data.name);
+});
 ---
 
 <!doctype html>
@@ -47,6 +55,9 @@ const projects = await getCollection('projects');
     <link rel="icon" href={faviconHref} sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href={faviconPngHref} />
     <link rel="apple-touch-icon" sizes="180x180" href={appleTouchIconHref} />
+    <script is:inline>
+      document.documentElement.classList.add('supports-scroll-reveal');
+    </script>
   </head>
   <body>
     <Navbar />
@@ -55,47 +66,74 @@ const projects = await getCollection('projects');
 
       <section class="py-20">
         <div class="section-shell">
-          <SectionHeader eyebrow="Research" title="Research tracks" />
+          <div data-scroll-reveal="section">
+            <SectionHeader eyebrow="Research" title="Research tracks" />
+          </div>
           <div class="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {tracks.map((track, index) => <ResearchTrackCard title={track.title} copy={track.copy} index={index} />)}
+            {
+              tracks.map((track, index) => (
+                <div data-scroll-reveal style={`--reveal-delay: ${120 + index * 80}ms`}>
+                  <ResearchTrackCard title={track.title} copy={track.copy} index={index} />
+                </div>
+              ))
+            }
           </div>
         </div>
       </section>
 
       <section class="py-20">
         <div class="section-shell">
-          <SectionHeader eyebrow="Open source" title="Open-source projects" />
+          <div data-scroll-reveal="section">
+            <SectionHeader eyebrow="Open source" title="Open-source projects" />
+          </div>
           <div class="mt-10 grid gap-5 lg:grid-cols-2">
-            {projects.map((project) => <ProjectCard project={project.data} />)}
+            {
+              projects.map((project, index) => (
+                <div class="h-full" data-scroll-reveal style={`--reveal-delay: ${120 + index * 80}ms`}>
+                  <ProjectCard project={project.data} />
+                </div>
+              ))
+            }
           </div>
         </div>
       </section>
 
       <section class="py-20">
         <div class="section-shell">
-          <SectionHeader eyebrow="Contribution" title="How to contribute" />
-          <div class="mt-10">
-            <ContributionPath />
+          <div data-scroll-reveal="section">
+            <SectionHeader eyebrow="Contribution" title="How to get involved" />
           </div>
-        </div>
-      </section>
-
-      <section class="pb-24">
-        <div class="section-shell">
-          <div class="rounded-2xl border border-gold-duck/25 bg-surface-2 p-8 shadow-gold-glow md:p-10">
-            <p class="mono-label mb-3 text-xs uppercase text-gold-duck">R&D onboarding</p>
-            <h2 class="text-3xl font-semibold text-white">Join the R&D team</h2>
-            <p class="mt-4 max-w-2xl leading-8 text-slate-300">
-              Bring a project idea, pick up a good first issue, or help turn research prototypes into useful tools.
-            </p>
-            <div class="mt-7 flex flex-col gap-3 sm:flex-row">
-
-              <Button href={site.githubUrl} variant="secondary" external>Open GitHub</Button>
-            </div>
+          <div class="mt-10" data-scroll-reveal style="--reveal-delay: 120ms">
+            <ContributionPath />
           </div>
         </div>
       </section>
     </main>
     <Footer />
+    <script is:inline>
+      const revealItems = Array.from(document.querySelectorAll('[data-scroll-reveal]'));
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (!('IntersectionObserver' in window) || prefersReducedMotion) {
+        revealItems.forEach((item) => item.setAttribute('data-reveal-visible', 'true'));
+      } else {
+        const revealObserver = new IntersectionObserver(
+          (entries, observer) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+
+              entry.target.setAttribute('data-reveal-visible', 'true');
+              observer.unobserve(entry.target);
+            });
+          },
+          {
+            rootMargin: '0px 0px -15% 0px',
+            threshold: 0.14
+          }
+        );
+
+        revealItems.forEach((item) => revealObserver.observe(item));
+      }
+    </script>
   </body>
 </html>
