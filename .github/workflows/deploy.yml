@@ -23,11 +23,13 @@ jobs:
     name: Build static Astro site
     runs-on: ubuntu-latest
     env:
+      # Organization/user repo deployment:
+      # https://<owner>.github.io/ should use an empty ASTRO_BASE.
+      #
       # Project repository deployment:
-      # https://<owner>.github.io/<repo-name>/
-      # For an organization/user repo named <owner>.github.io, set ASTRO_BASE to an empty string.
+      # https://<owner>.github.io/<repo-name>/ should use ASTRO_BASE='/<repo-name>'.
       ASTRO_SITE: https://${{ github.repository_owner }}.github.io
-      ASTRO_BASE: /${{ github.event.repository.name }}
+      ASTRO_BASE: ${{ endsWith(github.event.repository.name, '.github.io') && '' || format('/{0}', github.event.repository.name) }}
 
     steps:
       - name: Checkout
