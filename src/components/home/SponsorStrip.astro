@@ -6,13 +6,12 @@ import SectionHeader from '../shared/SectionHeader.astro';
 <section id="sponsors" class="py-24">
   <div class="section-shell">
     <div data-scroll-reveal="section">
-      <SectionHeader eyebrow="Sponsors" title="Supported by" />
+      <SectionHeader title="Supported by" />
     </div>
     <div class="mt-8" data-scroll-reveal style="--reveal-delay: 120ms">
-      <nav class="flex items-center justify-center gap-10 flex-wrap">
+      <nav class="mx-auto grid max-w-xl grid-cols-1 items-center gap-6 text-center sm:grid-cols-2">
         {
           sponsors
-            .filter((sponsor) => sponsor.name === 'Khalifa University')
             .map((sponsor) => (
               <a
                 href={sponsor.url ?? '#'}
