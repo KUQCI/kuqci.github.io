@@ -24,12 +24,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       # Organization/user repo deployment:
-      # https://<owner>.github.io/ should use an empty ASTRO_BASE.
-      #
-      # Project repository deployment:
-      # https://<owner>.github.io/<repo-name>/ should use ASTRO_BASE='/<repo-name>'.
+      # https://kuqci.github.io/ is served from the domain root, so ASTRO_BASE must be empty.
+      # For a separate project repository, change ASTRO_BASE to '/<repo-name>'.
       ASTRO_SITE: https://${{ github.repository_owner }}.github.io
-      ASTRO_BASE: ${{ endsWith(github.event.repository.name, '.github.io') && '' || format('/{0}', github.event.repository.name) }}
+      ASTRO_BASE: ''
 
     steps:
       - name: Checkout
@@ -38,7 +36,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
 
       - name: Install dependencies
