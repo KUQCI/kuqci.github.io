@@ -429,7 +429,7 @@ export default function PondHero() {
               Quantum Computing Initiative
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-slate-300 md:text-xl">
-              Learn quantum. Build quantum. Contribute to the ecosystem.
+              From bits to qubits: enter the quantum revolution.
             </p>
             <p className="mono-label mt-10 flex flex-col items-center justify-center gap-2 text-xs uppercase text-slate-500">
               <span>Scroll to enter</span>
