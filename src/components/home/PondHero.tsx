@@ -183,19 +183,18 @@ export default function PondHero() {
       />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(125,211,252,0.06),transparent_34rem)]" />
 
-      <div className="section-shell relative z-10 grid min-h-[100svh] place-items-center py-20 sm:py-24">
+      <div className="section-shell relative z-10 grid min-h-[100svh] items-start justify-items-center pb-10 pt-14 sm:place-items-center sm:py-24">
         <div
           ref={graphicRef}
-          className="relative mx-auto aspect-square w-full max-w-[720px] -translate-y-8 sm:-translate-y-14 md:max-w-[780px] md:-translate-y-20"
+          className="relative mx-auto w-full max-w-[min(92vw,30rem)] sm:aspect-square sm:max-w-[720px] sm:-translate-y-14 md:max-w-[780px] md:-translate-y-20"
         >
+          <div className="relative aspect-square w-full sm:absolute sm:inset-0">
           <motion.svg
             className="absolute inset-0 h-full w-full"
             viewBox="0 0 720 720"
             role="img"
             aria-label="Abstract quantum pond with a minimal duck and Bloch sphere arcs"
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: reduceMotion ? 0 : 1 }}
+            initial={false}
           >
             <defs>
               <radialGradient id="pondGlow" cx="50%" cy="50%" r="50%">
@@ -415,23 +414,24 @@ export default function PondHero() {
             className="pointer-events-none absolute inset-x-0 bottom-0 h-[46%] bg-gradient-to-t from-ink via-ink/88 to-transparent"
             aria-hidden="true"
           />
+          </div>
 
           <motion.div
-            className="absolute inset-x-0 bottom-0 mx-auto max-w-3xl px-4 text-center md:bottom-3"
-            initial={{ opacity: 0, y: 18 }}
+            className="relative z-10 -mt-16 mx-auto max-w-3xl px-4 text-center sm:absolute sm:inset-x-0 sm:bottom-0 sm:mt-0 md:bottom-3"
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: reduceMotion ? 0 : 1.9, duration: reduceMotion ? 0 : 0.8 }}
           >
             <p className="mono-label mb-4 text-xs font-semibold uppercase text-cyan-quantum/80">
               Khalifa University
             </p>
-            <h1 id="hero-title" className="text-4xl font-semibold leading-tight tracking-normal text-white md:text-7xl">
+            <h1 id="hero-title" className="text-3xl font-semibold leading-tight tracking-normal text-white sm:text-4xl md:text-7xl">
               Quantum Computing Initiative
             </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-slate-300 md:text-xl">
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-300 md:mt-5 md:text-xl md:leading-8">
               From bits to qubits: enter the quantum revolution.
             </p>
-            <p className="mono-label mt-10 flex flex-col items-center justify-center gap-2 text-xs uppercase text-slate-500">
+            <p className="mono-label mt-7 flex flex-col items-center justify-center gap-2 text-xs uppercase text-slate-500 md:mt-10">
               <span>Scroll to enter</span>
               <motion.svg
                 aria-hidden="true"
