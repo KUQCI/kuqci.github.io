@@ -172,7 +172,7 @@ export default function PondHero() {
   return (
     <section
       id="top"
-      className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-ink"
+      className="relative isolate flex min-h-[100svh] items-center justify-center overflow-hidden bg-ink"
       aria-labelledby="hero-title"
     >
       <motion.div
@@ -183,10 +183,10 @@ export default function PondHero() {
       />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(125,211,252,0.06),transparent_34rem)]" />
 
-      <div className="section-shell relative z-10 grid min-h-screen place-items-center py-24">
+      <div className="section-shell relative z-10 grid min-h-[100svh] place-items-center py-20 sm:py-24">
         <div
           ref={graphicRef}
-          className="relative mx-auto aspect-square w-full max-w-[780px] -translate-y-14 md:-translate-y-20"
+          className="relative mx-auto aspect-square w-full max-w-[720px] -translate-y-8 sm:-translate-y-14 md:max-w-[780px] md:-translate-y-20"
         >
           <motion.svg
             className="absolute inset-0 h-full w-full"
@@ -425,7 +425,7 @@ export default function PondHero() {
             <p className="mono-label mb-4 text-xs font-semibold uppercase text-cyan-quantum/80">
               Khalifa University
             </p>
-            <h1 id="hero-title" className="text-4xl font-semibold tracking-normal text-white md:text-7xl">
+            <h1 id="hero-title" className="text-4xl font-semibold leading-tight tracking-normal text-white md:text-7xl">
               Quantum Computing Initiative
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-slate-300 md:text-xl">

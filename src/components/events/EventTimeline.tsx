@@ -25,9 +25,10 @@ export default function EventTimeline({
     scrollPaddingInline: 'var(--event-track-pad)'
   } as CSSProperties;
   const timelineMaskStyle = {
-    maskImage: 'linear-gradient(to right, transparent 0, black 3.5rem, black calc(100% - 3.5rem), transparent 100%)',
+    maskImage:
+      'linear-gradient(to right, transparent 0, black clamp(1rem, 9vw, 3.5rem), black calc(100% - clamp(1rem, 9vw, 3.5rem)), transparent 100%)',
     WebkitMaskImage:
-      'linear-gradient(to right, transparent 0, black 3.5rem, black calc(100% - 3.5rem), transparent 100%)'
+      'linear-gradient(to right, transparent 0, black clamp(1rem, 9vw, 3.5rem), black calc(100% - clamp(1rem, 9vw, 3.5rem)), transparent 100%)'
   } as CSSProperties;
 
   useEffect(() => {
@@ -130,7 +131,7 @@ export default function EventTimeline({
                       </button>
                     )}
                   </div>
-                  <h3 className="mt-5 break-words text-3xl font-semibold text-white">{event.title}</h3>
+                  <h3 className="mt-5 break-words text-2xl font-semibold text-white sm:text-3xl">{event.title}</h3>
                   <dl className="mt-6 grid gap-3 text-sm text-slate-300">
                     <div className="flex justify-between gap-4 border-t border-cyan-quantum/10 pt-3">
                       <dt className="text-slate-500">Date</dt>
