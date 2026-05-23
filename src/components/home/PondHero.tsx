@@ -11,6 +11,8 @@ const ringTransition = {
 const BLOCH_CENTER = 360;
 const STATE_VECTOR_BASE_ANGLE =
   (Math.atan2(280 - BLOCH_CENTER, 468 - BLOCH_CENTER) * 180) / Math.PI;
+const STATE_VECTOR_ARROW_PATH =
+  'M358.9 358.6 L449.7 291.4 L444.5 284.4 L468 280 L457 301.2 L451.8 294.2 L361.1 361.4 Z';
 
 type SphereOrbital = {
   rx: number;
@@ -172,7 +174,7 @@ export default function PondHero() {
   return (
     <section
       id="top"
-      className="relative isolate flex min-h-[100svh] items-center justify-center overflow-hidden bg-ink"
+      className="relative isolate flex min-h-[100svh] items-center justify-center overflow-hidden"
       aria-labelledby="hero-title"
     >
       <motion.div
@@ -182,6 +184,10 @@ export default function PondHero() {
         transition={{ duration: reduceMotion ? 0 : 1.2 }}
       />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(125,211,252,0.06),transparent_34rem)]" />
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[52svh] bg-gradient-to-t from-[#050914] via-[#050914]/76 to-transparent"
+        aria-hidden="true"
+      />
 
       <div className="section-shell relative z-10 grid min-h-[100svh] items-start justify-items-center pb-10 pt-14 sm:place-items-center sm:py-24">
         <div
@@ -212,20 +218,30 @@ export default function PondHero() {
                 <stop offset="48%" stopColor="#f6d766" />
                 <stop offset="100%" stopColor="#eab84d" />
               </linearGradient>
-              <marker
-                id="stateArrow"
-                markerHeight="10"
-                markerWidth="10"
-                orient="auto"
-                refX="9"
-                refY="3"
-              >
-                <path d="M0,0 L9,3 L0,6 Z" fill="#f6c453" />
-              </marker>
               <filter id="softGoldGlow" x="-60%" y="-60%" width="220%" height="220%">
                 <feGaussianBlur stdDeviation="4" result="blur" />
                 <feMerge>
                   <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <filter
+                id="stateVectorGlow"
+                x="-80%"
+                y="-80%"
+                width="260%"
+                height="260%"
+                colorInterpolationFilters="sRGB"
+              >
+                <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="outerBlur" />
+                <feFlood floodColor="#f6c453" floodOpacity="0.82" result="outerColor" />
+                <feComposite in="outerColor" in2="outerBlur" operator="in" result="outerGlow" />
+                <feGaussianBlur in="SourceAlpha" stdDeviation="2.2" result="innerBlur" />
+                <feFlood floodColor="#ffe08a" floodOpacity="0.72" result="innerColor" />
+                <feComposite in="innerColor" in2="innerBlur" operator="in" result="innerGlow" />
+                <feMerge>
+                  <feMergeNode in="outerGlow" />
+                  <feMergeNode in="innerGlow" />
                   <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
@@ -327,29 +343,37 @@ export default function PondHero() {
                 transition={stateVectorTransition}
               >
                 <path
-                  d="M360 360 L468 280"
-                  fill="none"
-                  stroke="#f6c453"
-                  strokeOpacity="0.18"
-                  strokeWidth="10"
-                  strokeLinecap="round"
-                  filter="url(#softGoldGlow)"
+                  d={STATE_VECTOR_ARROW_PATH}
+                  fill="#f6c453"
+                  opacity="0.88"
+                  filter="url(#stateVectorGlow)"
                 />
                 <path
-                  d="M360 360 L468 280"
-                  fill="none"
+                  d={STATE_VECTOR_ARROW_PATH}
+                  fill="#f6c453"
                   stroke="#f6c453"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  markerEnd="url(#stateArrow)"
+                  strokeOpacity="0.45"
+                  strokeWidth="0.6"
+                  strokeLinejoin="round"
                 />
                 <motion.circle
                   cx="468"
                   cy="280"
-                  r="5"
+                  r="3"
+                  fill="none"
+                  stroke="#f6c453"
+                  strokeWidth="1.2"
+                  filter="url(#softGoldGlow)"
+                  animate={reduceMotion ? {} : { r: [3, 10, 3], opacity: [0, 0.45, 0] }}
+                  transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
+                />
+                <motion.circle
+                  cx="468"
+                  cy="280"
+                  r="3"
                   fill="#f6c453"
                   filter="url(#softGoldGlow)"
-                  animate={reduceMotion ? {} : { r: [4, 6, 4], opacity: [0.7, 1, 0.7] }}
+                  animate={reduceMotion ? {} : { r: [2.5, 3.8, 2.5], opacity: [0.62, 0.92, 0.62] }}
                   transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
                 />
               </motion.g>
@@ -410,10 +434,6 @@ export default function PondHero() {
             ))}
           </motion.svg>
 
-          <div
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-[46%] bg-gradient-to-t from-ink via-ink/88 to-transparent"
-            aria-hidden="true"
-          />
           </div>
 
           <motion.div
@@ -422,34 +442,40 @@ export default function PondHero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: reduceMotion ? 0 : 1.9, duration: reduceMotion ? 0 : 0.8 }}
           >
-            <p className="mono-label mb-4 text-xs font-semibold uppercase text-cyan-quantum/80">
-              Khalifa University
-            </p>
-            <h1 id="hero-title" className="text-3xl font-semibold leading-tight tracking-normal text-white sm:text-4xl md:text-7xl">
-              Quantum Computing Initiative
-            </h1>
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-300 md:mt-5 md:text-xl md:leading-8">
-              From bits to qubits: enter the quantum revolution.
-            </p>
-            <p className="mono-label mt-7 flex flex-col items-center justify-center gap-2 text-xs uppercase text-slate-500 md:mt-10">
-              <span>Scroll to enter</span>
-              <motion.svg
+            <div className="relative">
+              <div
+                className="pointer-events-none absolute inset-x-[-0.5rem] bottom-[-0.75rem] top-[-0.75rem] -z-10 rounded-[1.75rem] bg-[#050914]/28 backdrop-blur-md [mask-image:linear-gradient(to_bottom,transparent_0%,black_14%,black_86%,transparent_100%)] sm:inset-x-[-1.5rem]"
                 aria-hidden="true"
-                className="h-3.5 w-3.5 text-slate-500"
-                viewBox="0 0 16 16"
-                fill="none"
-                animate={reduceMotion ? {} : { y: [0, 3, 0], opacity: [0.45, 0.8, 0.45] }}
-                transition={{ duration: 2.1, repeat: Infinity, ease: 'easeInOut' }}
-              >
-                <path
-                  d="M8 2.5V12M4.25 8.25 8 12l3.75-3.75"
-                  stroke="currentColor"
-                  strokeWidth="1.25"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </motion.svg>
-            </p>
+              />
+              <p className="mono-label mb-4 text-xs font-semibold uppercase text-cyan-quantum/80">
+                Khalifa University
+              </p>
+              <h1 id="hero-title" className="text-3xl font-semibold leading-tight tracking-normal text-white sm:text-4xl md:text-7xl">
+                Quantum Computing Initiative
+              </h1>
+              <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-300 md:mt-5 md:text-xl md:leading-8">
+                From bits to qubits: enter the quantum revolution.
+              </p>
+              <p className="mono-label mt-7 flex flex-col items-center justify-center gap-2 text-xs uppercase text-slate-500 md:mt-10">
+                <span>Scroll to enter</span>
+                <motion.svg
+                  aria-hidden="true"
+                  className="h-3.5 w-3.5 text-slate-500"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  animate={reduceMotion ? {} : { y: [0, 3, 0], opacity: [0.45, 0.8, 0.45] }}
+                  transition={{ duration: 2.1, repeat: Infinity, ease: 'easeInOut' }}
+                >
+                  <path
+                    d="M8 2.5V12M4.25 8.25 8 12l3.75-3.75"
+                    stroke="currentColor"
+                    strokeWidth="1.25"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </motion.svg>
+              </p>
+            </div>
           </motion.div>
         </div>
       </div>
