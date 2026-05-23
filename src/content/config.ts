@@ -12,7 +12,7 @@ const events = defineCollection({
     endDate: z.string().optional(),
     location: z.string(),
     difficulty: z.enum(['Beginner', 'Intermediate', 'Advanced']).optional(),
-    status: z.enum(['Upcoming', 'Past', 'Registration Open']),
+    status: z.enum(['Upcoming', 'Past', 'Registration Open', 'In Progress']),
     tags: z.array(z.string()),
     registrationUrl: z.string().url().optional(),
     summary: z.string()

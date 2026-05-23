@@ -128,6 +128,23 @@ async function expectInternalLinksReachable(page: Page) {
   }
 }
 
+async function expectHeroRippleIsAnimating(page: Page) {
+  const ripple = page.locator('[data-hero-ripple="0"]');
+  await expect(ripple).toBeAttached();
+
+  const readRippleRadius = () =>
+    ripple.evaluate((element) => {
+      const ellipse = element as SVGEllipseElement;
+      return ellipse.rx.animVal.value;
+    });
+
+  const initialRadius = await readRippleRadius();
+  await page.waitForTimeout(700);
+  const nextRadius = await readRippleRadius();
+
+  expect(Math.abs(nextRadius - initialRadius), 'hero pond ripple should animate on mobile browsers').toBeGreaterThan(2);
+}
+
 for (const route of routes) {
   test(`${route.path} renders, hydrates, and loads client assets`, async ({ page }) => {
     const diagnostics = captureDiagnostics(page);
@@ -153,6 +170,38 @@ test('home hero and navbar scripts remain interactive', async ({ page }) => {
   await page.mouse.move(620, 260);
   await page.evaluate(() => window.scrollTo(0, window.innerHeight * 0.5));
   await expect(page.locator('[data-navbar]')).toHaveClass(/navbar-visible/);
+
+  await expectNoClientFailures(page, diagnostics);
+});
+
+test('mobile hero SVG animations run on touch browsers', async ({ page }, testInfo) => {
+  test.skip(!testInfo.project.name.includes('mobile'), 'touch-browser animation is covered in mobile projects');
+
+  const diagnostics = captureDiagnostics(page);
+
+  await page.goto('/', { waitUntil: 'networkidle' });
+  await expectAstroIslandsHydrated(page);
+  await expectHeroRippleIsAnimating(page);
+  await page.touchscreen.tap(300, 260);
+
+  await expectNoClientFailures(page, diagnostics);
+});
+
+test('mobile scroll reveal activates on about and R&D pages', async ({ page }, testInfo) => {
+  test.skip(!testInfo.project.name.includes('mobile'), 'mobile scroll reveal is covered in mobile projects');
+
+  const diagnostics = captureDiagnostics(page);
+  const revealTargets = [
+    { path: '/', selector: '#mission [data-scroll-reveal="section"]' },
+    { path: '/rd', selector: 'main > section:nth-of-type(2) [data-scroll-reveal="section"]' }
+  ];
+
+  for (const target of revealTargets) {
+    await page.goto(target.path, { waitUntil: 'networkidle' });
+    const revealElement = page.locator(target.selector).first();
+    await revealElement.scrollIntoViewIfNeeded();
+    await expect(revealElement).toHaveAttribute('data-reveal-visible', 'true');
+  }
 
   await expectNoClientFailures(page, diagnostics);
 });

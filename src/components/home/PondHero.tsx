@@ -2,12 +2,6 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
-const ringTransition = {
-  duration: 10,
-  repeat: Infinity,
-  ease: 'linear'
-} as const;
-
 const BLOCH_CENTER = 360;
 const STATE_VECTOR_BASE_ANGLE =
   (Math.atan2(280 - BLOCH_CENTER, 468 - BLOCH_CENTER) * 180) / Math.PI;
@@ -103,7 +97,6 @@ export default function PondHero() {
 
   const orbitalLayout = orbitalLayoutRef.current;
   const pulse = reduceMotion ? {} : { opacity: [0.32, 0.88, 0.32], scale: [1, 1.05, 1] };
-  const bob = reduceMotion ? {} : { y: [0, -4, 0] };
   const pointerStateVectorTransition = {
     type: 'spring' as const,
     stiffness: 90,
@@ -149,9 +142,27 @@ export default function PondHero() {
       setCursorVectorRotation(unwrapToNearestRotation(cursorAngle - STATE_VECTOR_BASE_ANGLE));
     };
 
+    const rememberAndPointAt = (x: number, y: number) => {
+      lastPointerRef.current = { x, y };
+      pointStateVectorAt(x, y);
+    };
+
     const handlePointerMove = (event: PointerEvent) => {
-      lastPointerRef.current = { x: event.clientX, y: event.clientY };
-      pointStateVectorAt(event.clientX, event.clientY);
+      rememberAndPointAt(event.clientX, event.clientY);
+    };
+
+    const handlePointerDown = (event: PointerEvent) => {
+      rememberAndPointAt(event.clientX, event.clientY);
+    };
+
+    const handleTouchMove = (event: TouchEvent) => {
+      const touch = event.touches[0] ?? event.changedTouches[0];
+
+      if (!touch) {
+        return;
+      }
+
+      rememberAndPointAt(touch.clientX, touch.clientY);
     };
 
     const updateFromLastPointer = () => {
@@ -161,11 +172,17 @@ export default function PondHero() {
     };
 
     window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    window.addEventListener('pointerdown', handlePointerDown, { passive: true });
+    window.addEventListener('touchstart', handleTouchMove, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
     window.addEventListener('scroll', updateFromLastPointer, { passive: true });
     window.addEventListener('resize', updateFromLastPointer);
 
     return () => {
       window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerdown', handlePointerDown);
+      window.removeEventListener('touchstart', handleTouchMove);
+      window.removeEventListener('touchmove', handleTouchMove);
       window.removeEventListener('scroll', updateFromLastPointer);
       window.removeEventListener('resize', updateFromLastPointer);
     };
@@ -174,7 +191,7 @@ export default function PondHero() {
   return (
     <section
       id="top"
-      className="relative isolate flex min-h-[100svh] items-center justify-center overflow-hidden"
+      className="relative isolate flex min-h-screen min-h-[100svh] items-center justify-center overflow-hidden"
       aria-labelledby="hero-title"
     >
       <motion.div
@@ -189,12 +206,11 @@ export default function PondHero() {
         aria-hidden="true"
       />
 
-      <div className="section-shell relative z-10 grid min-h-[100svh] items-start justify-items-center pb-10 pt-14 sm:place-items-center sm:py-24">
+      <div className="section-shell relative z-10 grid min-h-screen min-h-[100svh] items-start justify-items-center pb-10 pt-14 sm:place-items-center sm:py-24">
         <div
-          ref={graphicRef}
           className="relative mx-auto w-full max-w-[min(92vw,30rem)] sm:aspect-square sm:max-w-[720px] sm:-translate-y-14 md:max-w-[780px] md:-translate-y-20"
         >
-          <div className="relative aspect-square w-full sm:absolute sm:inset-0">
+          <div ref={graphicRef} className="relative aspect-square w-full sm:absolute sm:inset-0" data-hero-graphic>
           <motion.svg
             className="absolute inset-0 h-full w-full"
             viewBox="0 0 720 720"
@@ -255,32 +271,46 @@ export default function PondHero() {
               transition={{ delay: reduceMotion ? 0 : 0.35, duration: reduceMotion ? 0 : 1 }}
             >
               {[0, 1, 2].map((ring) => (
-                <motion.ellipse
+                <ellipse
                   key={ring}
+                  data-hero-ripple={ring}
                   cx="360"
                   cy="392"
                   rx="48"
                   ry="12"
                   fill="none"
                   stroke={ring === 1 ? '#7dd3fc' : '#2f80ed'}
+                  opacity={reduceMotion ? 0.24 : 0}
                   strokeOpacity={0.34}
                   strokeWidth="1.4"
-                  animate={
-                    reduceMotion
-                      ? {}
-                      : {
-                          rx: [48, 220],
-                          ry: [12, 56],
-                          opacity: [0, 0.42, 0.18, 0]
-                        }
-                  }
-                  transition={{
-                    duration: 10.0,
-                    repeat: Infinity,
-                    delay: -(ring * 3.33),
-                    ease: 'linear'
-                  }}
-                />
+                >
+                  {!reduceMotion && (
+                    <>
+                      <animate
+                        attributeName="rx"
+                        values="48;220"
+                        dur="10.6s"
+                        begin={`${-(ring * 3.53)}s`}
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="ry"
+                        values="12;56"
+                        dur="10.6s"
+                        begin={`${-(ring * 3.53)}s`}
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="opacity"
+                        values="0;0.42;0.18;0"
+                        keyTimes="0;0.34;0.72;1"
+                        dur="10.6s"
+                        begin={`${-(ring * 3.53)}s`}
+                        repeatCount="indefinite"
+                      />
+                    </>
+                  )}
+                </ellipse>
               ))}
             </motion.g>
 
@@ -297,24 +327,33 @@ export default function PondHero() {
                 strokeWidth="1.2"
               />
               {sphereOrbitals.map((orbital, index) => (
-                <motion.g
+                <ellipse
                   key={`${orbital.rx}-${orbital.ry}-${orbital.baseAngle}`}
-                  style={{ transformBox: 'view-box', transformOrigin: '360px 360px' }}
-                  animate={reduceMotion ? {} : { rotate: orbital.direction * 360 }}
-                  transition={{ ...ringTransition, duration: orbital.duration, delay: orbitalLayout[index].phaseDelay }}
+                  data-hero-orbital={index}
+                  cx="360"
+                  cy="360"
+                  rx={orbital.rx}
+                  ry={orbital.ry}
+                  fill="none"
+                  stroke={orbital.stroke}
+                  strokeOpacity={orbital.strokeOpacity}
+                  strokeWidth="1.2"
+                  transform={`rotate(${orbitalLayout[index].planeAngle} 360 360)`}
                 >
-                  <ellipse
-                    cx="360"
-                    cy="360"
-                    rx={orbital.rx}
-                    ry={orbital.ry}
-                    fill="none"
-                    stroke={orbital.stroke}
-                    strokeOpacity={orbital.strokeOpacity}
-                    strokeWidth="1.2"
-                    transform={`rotate(${orbitalLayout[index].planeAngle} 360 360)`}
-                  />
-                </motion.g>
+                  {!reduceMotion && (
+                    <animateTransform
+                      attributeName="transform"
+                      attributeType="XML"
+                      type="rotate"
+                      from="0 360 360"
+                      to={`${orbital.direction * 360} 360 360`}
+                      dur={`${orbital.duration}s`}
+                      begin={`${orbitalLayout[index].phaseDelay}s`}
+                      repeatCount="indefinite"
+                      additive="sum"
+                    />
+                  )}
+                </ellipse>
               ))}
               <path
                 d="M360 148 L360 572"
@@ -392,7 +431,17 @@ export default function PondHero() {
               </text>
             </g>
 
-            <motion.g animate={bob} transition={{ duration: 3.8, repeat: Infinity, ease: 'easeInOut' }}>
+            <g data-hero-duck>
+              {!reduceMotion && (
+                <animateTransform
+                  attributeName="transform"
+                  attributeType="XML"
+                  type="translate"
+                  values="0 0; 0 -4; 0 0"
+                  dur="3.8s"
+                  repeatCount="indefinite"
+                />
+              )}
               <ellipse cx="360" cy="405" rx="68" ry="12" fill="#2f80ed" opacity="0.2" />
               <path
                 d="M302 366 C310 338 343 324 383 331 C420 337 442 357 444 382 C416 397 355 405 310 390 C302 386 297 376 302 366Z"
@@ -419,7 +468,7 @@ export default function PondHero() {
                 strokeWidth="4"
                 strokeLinecap="round"
               />
-            </motion.g>
+            </g>
 
             {[['360', '148'], ['360', '572'], ['178', '360'], ['542', '360']].map(([cx, cy], index) => (
               <motion.circle
@@ -438,7 +487,7 @@ export default function PondHero() {
 
           <motion.div
             className="relative z-10 -mt-16 mx-auto max-w-3xl px-4 text-center sm:absolute sm:inset-x-0 sm:bottom-0 sm:mt-0 md:bottom-3"
-            initial={false}
+            initial={reduceMotion ? false : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: reduceMotion ? 0 : 1.9, duration: reduceMotion ? 0 : 0.8 }}
           >

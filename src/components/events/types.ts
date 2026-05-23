@@ -1,5 +1,5 @@
 export type EventType = 'Workshop' | 'Hackathon' | 'Talk' | 'Bootcamp' | 'Showcase';
-export type EventStatus = 'Upcoming' | 'Past' | 'Registration Open';
+export type EventStatus = 'Upcoming' | 'Past' | 'Registration Open' | 'In Progress';
 export type EventDifficulty = 'Beginner' | 'Intermediate' | 'Advanced';
 
 export interface SerializedEvent {

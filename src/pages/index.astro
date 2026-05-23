@@ -83,12 +83,49 @@ const appleTouchIconHref = `${basePath}/apple-touch-icon.png?v=3`;
     <CustomCursor />
     <script is:inline>
       const revealItems = Array.from(document.querySelectorAll('[data-scroll-reveal]'));
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const prefersReducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      let revealObserver;
 
-      if (!('IntersectionObserver' in window) || prefersReducedMotion) {
-        revealItems.forEach((item) => item.setAttribute('data-reveal-visible', 'true'));
+      const revealItem = (item) => {
+        item.setAttribute('data-reveal-visible', 'true');
+        if (revealObserver) {
+          revealObserver.unobserve(item);
+        }
+      };
+
+      const revealAllItems = () => {
+        revealItems.forEach(revealItem);
+      };
+
+      const getRevealLine = () => {
+        const visualHeight = window.visualViewport ? window.visualViewport.height : 0;
+        const viewportHeight = Math.max(window.innerHeight || 0, visualHeight || 0);
+        return viewportHeight * 0.88;
+      };
+
+      const revealVisibleItems = () => {
+        const revealLine = getRevealLine();
+
+        revealItems.forEach((item) => {
+          if (item.getAttribute('data-reveal-visible') === 'true') {
+            return;
+          }
+
+          const rect = item.getBoundingClientRect();
+          if (rect.top <= revealLine && rect.bottom >= 0) {
+            revealItem(item);
+          }
+        });
+      };
+
+      const scheduleRevealCheck = () => {
+        window.requestAnimationFrame(revealVisibleItems);
+      };
+
+      if (!('IntersectionObserver' in window) || prefersReducedMotionQuery.matches) {
+        revealAllItems();
       } else {
-        const revealObserver = new IntersectionObserver(
+        revealObserver = new IntersectionObserver(
           (entries, observer) => {
             entries.forEach((entry) => {
               if (!entry.isIntersecting) return;
@@ -98,12 +135,30 @@ const appleTouchIconHref = `${basePath}/apple-touch-icon.png?v=3`;
             });
           },
           {
-            rootMargin: '0px 0px -10% 0px',
-            threshold: 0.1
+            rootMargin: '0px 0px -6% 0px',
+            threshold: [0, 0.01, 0.08]
           }
         );
 
         revealItems.forEach((item) => revealObserver.observe(item));
+        window.addEventListener('scroll', scheduleRevealCheck, { passive: true });
+        window.addEventListener('resize', scheduleRevealCheck, { passive: true });
+        window.addEventListener('orientationchange', scheduleRevealCheck, { passive: true });
+        window.addEventListener('pageshow', scheduleRevealCheck);
+
+        if (window.visualViewport) {
+          window.visualViewport.addEventListener('resize', scheduleRevealCheck, { passive: true });
+          window.visualViewport.addEventListener('scroll', scheduleRevealCheck, { passive: true });
+        }
+
+        if (prefersReducedMotionQuery.addEventListener) {
+          prefersReducedMotionQuery.addEventListener('change', (event) => {
+            if (event.matches) revealAllItems();
+          });
+        }
+
+        scheduleRevealCheck();
+        window.setTimeout(revealVisibleItems, 450);
       }
     </script>
   </body>
