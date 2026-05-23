@@ -3,6 +3,7 @@ import '../styles/global.css';
 import { getCollection } from 'astro:content';
 import Navbar from '../components/shared/Navbar.astro';
 import Footer from '../components/shared/Footer.astro';
+import CustomCursor from '../components/shared/CustomCursor.astro';
 import SectionHeader from '../components/shared/SectionHeader.astro';
 import RDHero from '../components/rd/RDHero.astro';
 import ResearchTrackCard from '../components/rd/ResearchTrackCard.astro';
@@ -110,6 +111,7 @@ const projects = (await getCollection('projects')).sort((a, b) => {
       </section>
     </main>
     <Footer />
+    <CustomCursor />
     <script is:inline>
       const revealItems = Array.from(document.querySelectorAll('[data-scroll-reveal]'));
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

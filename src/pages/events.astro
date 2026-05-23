@@ -3,6 +3,7 @@ import '../styles/global.css';
 import { getCollection } from 'astro:content';
 import Navbar from '../components/shared/Navbar.astro';
 import Footer from '../components/shared/Footer.astro';
+import CustomCursor from '../components/shared/CustomCursor.astro';
 import SectionHeader from '../components/shared/SectionHeader.astro';
 import EventsExperience from '../components/events/EventsExperience';
 import type { SerializedEvent } from '../components/events/types';
@@ -54,5 +55,6 @@ const events: SerializedEvent[] = eventEntries
       </section>
     </main>
     <Footer />
+    <CustomCursor />
   </body>
 </html>

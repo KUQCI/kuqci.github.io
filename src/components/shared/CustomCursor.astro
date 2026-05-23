@@ -1,0 +1,507 @@
+---
+---
+
+<div class="qci-custom-cursor" data-custom-cursor aria-hidden="true">
+  <div class="qci-custom-cursor__aura" data-cursor-aura></div>
+  <div class="qci-custom-cursor__core" data-cursor-core>
+    <span class="qci-custom-cursor__orb"></span>
+    <span class="qci-custom-cursor__beak"></span>
+    <span class="qci-custom-cursor__eye"></span>
+  </div>
+  <div class="qci-custom-cursor__label mono-label" data-cursor-label></div>
+  <div class="qci-custom-cursor__particles" data-cursor-particles></div>
+</div>
+
+<button class="qci-cursor-toggle mono-label" data-cursor-toggle type="button" aria-pressed="true">
+  <span>Cursor FX</span>
+  <span class="qci-cursor-toggle__state" data-cursor-toggle-state>On</span>
+</button>
+
+<style>
+  html.qci-custom-cursor-on,
+  html.qci-custom-cursor-on * {
+    cursor: none !important;
+  }
+
+  .qci-custom-cursor {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 180ms ease;
+  }
+
+  .qci-custom-cursor[data-active='true'][data-ready='true'] {
+    opacity: 1;
+  }
+
+  .qci-custom-cursor__aura,
+  .qci-custom-cursor__core,
+  .qci-custom-cursor__label {
+    position: fixed;
+    top: 0;
+    left: 0;
+    will-change: transform, opacity;
+  }
+
+  .qci-custom-cursor__aura {
+    width: 2.15rem;
+    height: 2.15rem;
+    margin: -1.075rem 0 0 -1.075rem;
+    border: 1px solid rgba(125, 211, 252, 0.28);
+    border-radius: 999px;
+    background:
+      radial-gradient(circle, rgba(246, 196, 83, 0.15), transparent 58%),
+      radial-gradient(circle at 65% 38%, rgba(125, 211, 252, 0.16), transparent 42%);
+    box-shadow:
+      0 0 22px rgba(246, 196, 83, 0.2),
+      0 0 38px rgba(47, 128, 237, 0.14);
+    opacity: 0.72;
+    transition:
+      width 180ms ease,
+      height 180ms ease,
+      margin 180ms ease,
+      border-color 180ms ease,
+      opacity 180ms ease;
+  }
+
+  .qci-custom-cursor__aura::before,
+  .qci-custom-cursor__aura::after {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: 0.26rem;
+    height: 0.26rem;
+    border-radius: 999px;
+    background: var(--qci-cyan);
+    box-shadow: 0 0 10px rgba(125, 211, 252, 0.75);
+    content: "";
+    opacity: 0;
+  }
+
+  .qci-custom-cursor__aura::before {
+    transform: translate(-50%, -50%) rotate(0deg) translateX(1.05rem);
+  }
+
+  .qci-custom-cursor__aura::after {
+    transform: translate(-50%, -50%) rotate(180deg) translateX(1.05rem);
+  }
+
+  .qci-custom-cursor__core {
+    width: 1.22rem;
+    height: 1rem;
+    margin: -0.5rem 0 0 -0.61rem;
+    transform-origin: 50% 50%;
+    transition: opacity 160ms ease;
+  }
+
+  .qci-custom-cursor__orb {
+    position: absolute;
+    inset: 0;
+    border-radius: 58% 48% 52% 56%;
+    background:
+      radial-gradient(circle at 38% 31%, rgba(255, 252, 217, 0.95), rgba(255, 252, 217, 0) 30%),
+      linear-gradient(135deg, #fff1a3 0%, #f6c453 55%, #df9f2e 100%);
+    box-shadow:
+      0 0 10px rgba(246, 196, 83, 0.58),
+      0 0 24px rgba(246, 196, 83, 0.28);
+    animation: qci-cursor-breathe 2.8s ease-in-out infinite;
+  }
+
+  .qci-custom-cursor__beak {
+    position: absolute;
+    top: 0.37rem;
+    right: -0.27rem;
+    width: 0.42rem;
+    height: 0.25rem;
+    border-radius: 0 999px 999px 0;
+    background: linear-gradient(90deg, rgba(246, 196, 83, 0.9), rgba(125, 211, 252, 0.72));
+    filter: drop-shadow(0 0 6px rgba(125, 211, 252, 0.34));
+    opacity: 0.84;
+  }
+
+  .qci-custom-cursor__eye {
+    position: absolute;
+    top: 0.32rem;
+    right: 0.31rem;
+    width: 0.12rem;
+    height: 0.12rem;
+    border-radius: 999px;
+    background: rgba(5, 9, 20, 0.86);
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.38);
+  }
+
+  .qci-custom-cursor__label {
+    padding: 0.28rem 0.45rem;
+    border: 1px solid rgba(125, 211, 252, 0.22);
+    border-radius: 999px;
+    background: rgba(5, 9, 20, 0.78);
+    color: var(--qci-cyan);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    opacity: 0;
+    transform: translate3d(-50%, 1.25rem, 0);
+    transition: opacity 160ms ease;
+    white-space: nowrap;
+  }
+
+  .qci-custom-cursor.is-hovering .qci-custom-cursor__aura {
+    width: 3.25rem;
+    height: 3.25rem;
+    margin: -1.625rem 0 0 -1.625rem;
+    border-color: rgba(246, 196, 83, 0.48);
+    opacity: 0.98;
+  }
+
+  .qci-custom-cursor.is-hovering .qci-custom-cursor__core {
+    opacity: 0.42;
+  }
+
+  .qci-custom-cursor.is-labeled .qci-custom-cursor__label {
+    opacity: 1;
+  }
+
+  .qci-custom-cursor.is-quantum .qci-custom-cursor__aura::before,
+  .qci-custom-cursor.is-quantum .qci-custom-cursor__aura::after {
+    opacity: 1;
+    animation: qci-cursor-orbit 900ms linear infinite;
+  }
+
+  .qci-custom-cursor.is-quantum .qci-custom-cursor__aura::after {
+    animation-delay: -450ms;
+  }
+
+  .qci-custom-cursor.is-clicking .qci-custom-cursor__core {
+    opacity: 0.72;
+  }
+
+  .qci-cursor-toggle {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 90;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    border: 1px solid rgba(125, 211, 252, 0.22);
+    border-radius: 999px;
+    background: rgba(5, 9, 20, 0.72);
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.26);
+    color: rgba(226, 232, 240, 0.82);
+    padding: 0.52rem 0.7rem;
+    font-size: 0.62rem;
+    font-weight: 700;
+    line-height: 1;
+    backdrop-filter: blur(14px);
+    transition:
+      border-color 180ms ease,
+      color 180ms ease,
+      opacity 180ms ease,
+      transform 180ms ease;
+  }
+
+  .qci-cursor-toggle:hover,
+  .qci-cursor-toggle:focus-visible {
+    border-color: rgba(246, 196, 83, 0.5);
+    color: #fff;
+  }
+
+  .qci-cursor-toggle__state {
+    border-radius: 999px;
+    background: rgba(246, 196, 83, 0.14);
+    color: var(--qci-gold);
+    padding: 0.25rem 0.38rem;
+  }
+
+  .qci-cursor-toggle[aria-pressed='false'] .qci-cursor-toggle__state {
+    background: rgba(148, 163, 184, 0.12);
+    color: rgba(203, 213, 225, 0.72);
+  }
+
+  .qci-cursor-ripple,
+  .qci-cursor-particle {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+
+  .qci-cursor-ripple {
+    width: 1rem;
+    height: 1rem;
+    margin: -0.5rem 0 0 -0.5rem;
+    border: 1px solid rgba(246, 196, 83, 0.55);
+    border-radius: 999px;
+    animation: qci-cursor-ripple 520ms ease-out forwards;
+  }
+
+  .qci-cursor-particle {
+    width: 0.24rem;
+    height: 0.24rem;
+    margin: -0.12rem 0 0 -0.12rem;
+    border-radius: 999px;
+    background: var(--qci-gold);
+    box-shadow: 0 0 9px rgba(246, 196, 83, 0.58);
+    animation: qci-cursor-particle 480ms ease-out forwards;
+  }
+
+  @keyframes qci-cursor-breathe {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.08);
+    }
+  }
+
+  @keyframes qci-cursor-orbit {
+    from {
+      transform: translate(-50%, -50%) rotate(0deg) translateX(1.35rem);
+    }
+
+    to {
+      transform: translate(-50%, -50%) rotate(360deg) translateX(1.35rem);
+    }
+  }
+
+  @keyframes qci-cursor-ripple {
+    from {
+      opacity: 0.72;
+      transform: translate3d(var(--x), var(--y), 0) scale(0.8);
+    }
+
+    to {
+      opacity: 0;
+      transform: translate3d(var(--x), var(--y), 0) scale(3.1);
+    }
+  }
+
+  @keyframes qci-cursor-particle {
+    from {
+      opacity: 0.85;
+      transform: translate3d(var(--x), var(--y), 0) scale(1);
+    }
+
+    to {
+      opacity: 0;
+      transform: translate3d(calc(var(--x) + var(--tx)), calc(var(--y) + var(--ty)), 0) scale(0.35);
+    }
+  }
+
+  @media (max-width: 767px), (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+    .qci-custom-cursor,
+    .qci-cursor-toggle {
+      display: none;
+    }
+  }
+</style>
+
+<script is:inline>
+  (() => {
+    const storageKey = 'kuqci-custom-cursor-enabled';
+    const root = document.documentElement;
+    const cursor = document.querySelector('[data-custom-cursor]');
+    const core = document.querySelector('[data-cursor-core]');
+    const aura = document.querySelector('[data-cursor-aura]');
+    const label = document.querySelector('[data-cursor-label]');
+    const particles = document.querySelector('[data-cursor-particles]');
+    const toggle = document.querySelector('[data-cursor-toggle]');
+    const toggleState = document.querySelector('[data-cursor-toggle-state]');
+
+    if (!cursor || !core || !aura || !label || !particles || !toggle || !toggleState) return;
+
+    const finePointerQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let targetX = window.innerWidth / 2;
+    let targetY = window.innerHeight / 2;
+    let x = targetX;
+    let y = targetY;
+    let auraX = targetX;
+    let auraY = targetY;
+    let previousX = x;
+    let previousY = y;
+    let angle = 0;
+    let rafId = 0;
+    let enabled = true;
+    let runtimeActive = false;
+    let ready = false;
+    let clickTimer = 0;
+
+    const getPreference = () => {
+      try {
+        const stored = localStorage.getItem(storageKey);
+        return stored === null ? true : stored === 'true';
+      } catch {
+        return true;
+      }
+    };
+
+    const setPreference = (value) => {
+      try {
+        localStorage.setItem(storageKey, String(value));
+      } catch {
+        // Preference persistence is a nice-to-have; the cursor still works without it.
+      }
+    };
+
+    const isSupported = () => finePointerQuery.matches && !reducedMotionQuery.matches;
+
+    const updateToggle = () => {
+      toggle.setAttribute('aria-pressed', String(enabled));
+      toggleState.textContent = enabled ? 'On' : 'Off';
+      toggle.hidden = !isSupported();
+    };
+
+    const getCursorTarget = (eventTarget) => {
+      if (!(eventTarget instanceof Element)) return null;
+      return eventTarget.closest('a, button, input, textarea, select, [role="button"], [data-cursor]');
+    };
+
+    const setHoverState = (eventTarget) => {
+      const target = getCursorTarget(eventTarget);
+      const cursorText = target?.getAttribute('data-cursor-text') ?? '';
+      const isQuantum = target?.getAttribute('data-cursor') === 'quantum';
+
+      cursor.classList.toggle('is-hovering', Boolean(target));
+      cursor.classList.toggle('is-labeled', Boolean(cursorText));
+      cursor.classList.toggle('is-quantum', Boolean(isQuantum));
+      label.textContent = cursorText;
+    };
+
+    const render = () => {
+      x = targetX;
+      y = targetY;
+      auraX += (targetX - auraX) * 0.32;
+      auraY += (targetY - auraY) * 0.32;
+
+      const dx = x - previousX;
+      const dy = y - previousY;
+      const speed = Math.min(Math.hypot(dx, dy), 42);
+
+      if (speed > 0.2) {
+        angle = Math.atan2(dy, dx);
+      }
+
+      const stretch = cursor.classList.contains('is-hovering') ? 1 : 1 + speed / 260;
+      const squeeze = cursor.classList.contains('is-clicking') ? 0.78 : 1;
+      const coreTransform = `translate3d(${x}px, ${y}px, 0) rotate(${angle}rad) scale(${stretch * squeeze}, ${1 / Math.max(stretch, 1)})`;
+      const auraTransform = `translate3d(${auraX}px, ${auraY}px, 0)`;
+      const labelTransform = `translate3d(${x}px, ${y + 30}px, 0) translateX(-50%)`;
+
+      core.style.transform = coreTransform;
+      aura.style.transform = auraTransform;
+      label.style.transform = labelTransform;
+
+      previousX = x;
+      previousY = y;
+      rafId = window.requestAnimationFrame(render);
+    };
+
+    const createClickEffect = () => {
+      const ripple = document.createElement('span');
+      ripple.className = 'qci-cursor-ripple';
+      ripple.style.setProperty('--x', `${targetX}px`);
+      ripple.style.setProperty('--y', `${targetY}px`);
+      particles.appendChild(ripple);
+      ripple.addEventListener('animationend', () => ripple.remove(), { once: true });
+
+      for (let index = 0; index < 5; index += 1) {
+        const particle = document.createElement('span');
+        const theta = Math.random() * Math.PI * 2;
+        const distance = 12 + Math.random() * 14;
+        particle.className = 'qci-cursor-particle';
+        particle.style.setProperty('--x', `${targetX}px`);
+        particle.style.setProperty('--y', `${targetY}px`);
+        particle.style.setProperty('--tx', `${Math.cos(theta) * distance}px`);
+        particle.style.setProperty('--ty', `${Math.sin(theta) * distance}px`);
+        particles.appendChild(particle);
+        particle.addEventListener('animationend', () => particle.remove(), { once: true });
+      }
+    };
+
+    const handlePointerMove = (event) => {
+      targetX = event.clientX;
+      targetY = event.clientY;
+
+      if (!ready) {
+        x = targetX;
+        y = targetY;
+        auraX = targetX;
+        auraY = targetY;
+        previousX = x;
+        previousY = y;
+        ready = true;
+        root.classList.add('qci-custom-cursor-on');
+        cursor.setAttribute('data-ready', 'true');
+      }
+
+      setHoverState(event.target);
+    };
+
+    const handlePointerLeave = () => {
+      cursor.removeAttribute('data-ready');
+      root.classList.remove('qci-custom-cursor-on');
+      ready = false;
+    };
+
+    const handlePointerDown = () => {
+      cursor.classList.add('is-clicking');
+      window.clearTimeout(clickTimer);
+      clickTimer = window.setTimeout(() => cursor.classList.remove('is-clicking'), 150);
+      createClickEffect();
+    };
+
+    const enableRuntime = () => {
+      if (runtimeActive || !isSupported()) return;
+      runtimeActive = true;
+      cursor.setAttribute('data-active', 'true');
+      window.addEventListener('pointermove', handlePointerMove, { passive: true });
+      window.addEventListener('pointerdown', handlePointerDown, { passive: true });
+      document.addEventListener('pointerleave', handlePointerLeave);
+      rafId = window.requestAnimationFrame(render);
+    };
+
+    const disableRuntime = () => {
+      if (!runtimeActive) return;
+      runtimeActive = false;
+      root.classList.remove('qci-custom-cursor-on');
+      cursor.removeAttribute('data-active');
+      cursor.removeAttribute('data-ready');
+      cursor.classList.remove('is-hovering', 'is-labeled', 'is-quantum', 'is-clicking');
+      particles.textContent = '';
+      ready = false;
+      window.cancelAnimationFrame(rafId);
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerdown', handlePointerDown);
+      document.removeEventListener('pointerleave', handlePointerLeave);
+    };
+
+    const syncRuntime = () => {
+      updateToggle();
+
+      if (enabled && isSupported()) {
+        enableRuntime();
+      } else {
+        disableRuntime();
+      }
+    };
+
+    enabled = getPreference();
+    syncRuntime();
+
+    toggle.addEventListener('click', () => {
+      enabled = !enabled;
+      setPreference(enabled);
+      syncRuntime();
+    });
+
+    const handleMediaChange = () => syncRuntime();
+
+    finePointerQuery.addEventListener?.('change', handleMediaChange);
+    reducedMotionQuery.addEventListener?.('change', handleMediaChange);
+  })();
+</script>

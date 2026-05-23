@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Navbar from '../components/shared/Navbar.astro';
 import Footer from '../components/shared/Footer.astro';
+import CustomCursor from '../components/shared/CustomCursor.astro';
 import SectionHeader from '../components/shared/SectionHeader.astro';
 import Button from '../components/shared/Button.astro';
 import PondHero from '../components/home/PondHero';
@@ -79,6 +80,7 @@ const appleTouchIconHref = `${basePath}/apple-touch-icon.png?v=3`;
       <EndCard />
     </main>
     <Footer />
+    <CustomCursor />
     <script is:inline>
       const revealItems = Array.from(document.querySelectorAll('[data-scroll-reveal]'));
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
