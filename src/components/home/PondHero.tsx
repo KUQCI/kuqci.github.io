@@ -374,7 +374,7 @@ export default function PondHero() {
             <motion.g
               initial={{ opacity: 0, pathLength: 0 }}
               animate={{ opacity: 1, pathLength: 1 }}
-              transition={{ delay: reduceMotion ? 0 : 0.9, duration: reduceMotion ? 0 : 1 }}
+              transition={{ delay: reduceMotion ? 0 : 0.12, duration: reduceMotion ? 0 : 0.82, ease: 'easeOut' }}
             >
               <motion.g
                 style={{ transformBox: 'view-box', transformOrigin: '360px 360px' }}
@@ -489,7 +489,7 @@ export default function PondHero() {
             className="relative z-10 -mt-16 mx-auto max-w-3xl px-4 text-center sm:absolute sm:inset-x-0 sm:bottom-0 sm:mt-0 md:bottom-3"
             initial={reduceMotion ? false : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: reduceMotion ? 0 : 0.16, duration: reduceMotion ? 0 : 0.62, ease: 'easeOut' }}
+            transition={{ delay: reduceMotion ? 0 : 0.2, duration: reduceMotion ? 0 : 0.82, ease: 'easeOut' }}
           >
             <div className="relative">
               <div
