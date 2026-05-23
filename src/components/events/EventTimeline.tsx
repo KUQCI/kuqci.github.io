@@ -17,6 +17,7 @@ export default function EventTimeline({
   onPrevious
 }: EventTimelineProps) {
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const hasPositionedInitialCardRef = useRef(false);
   const selectedIndex = events.findIndex((event) => event.slug === selectedSlug);
   const selectorStyle = {
     '--event-card-width': 'min(42rem, calc(100vw - 3rem))',
@@ -33,7 +34,12 @@ export default function EventTimeline({
 
   useEffect(() => {
     const selectedCard = scrollerRef.current?.querySelector<HTMLElement>(`[data-event-card="${selectedSlug}"]`);
-    selectedCard?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    selectedCard?.scrollIntoView({
+      behavior: hasPositionedInitialCardRef.current ? 'smooth' : 'auto',
+      inline: 'center',
+      block: 'nearest'
+    });
+    hasPositionedInitialCardRef.current = true;
   }, [selectedSlug]);
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {

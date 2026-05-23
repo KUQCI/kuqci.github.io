@@ -16,23 +16,30 @@ function sortEvents(events: SerializedEvent[]) {
   return [...events].sort((a, b) => toLocalDate(a.date).getTime() - toLocalDate(b.date).getTime());
 }
 
+function getDefaultEvent(events: SerializedEvent[]) {
+  const activeOrUpcoming = events.find((event) => event.status !== 'Past');
+
+  return activeOrUpcoming ?? events[events.length - 1];
+}
+
 export default function EventsExperience({ events }: EventsExperienceProps) {
   const sortedEvents = useMemo(() => sortEvents(events), [events]);
   const eventTypes = useMemo(() => Array.from(new Set(sortedEvents.map((event) => event.type))), [sortedEvents]);
-  const firstUpcoming = sortedEvents.find((event) => event.status !== 'Past') ?? sortedEvents[0];
+  const defaultEvent = getDefaultEvent(sortedEvents);
 
   const [activeType, setActiveType] = useState<EventType | 'All'>('All');
-  const [selectedSlug, setSelectedSlug] = useState(firstUpcoming.slug);
+  const [selectedSlug, setSelectedSlug] = useState(defaultEvent.slug);
   const filteredEvents = useMemo(
     () => (activeType === 'All' ? sortedEvents : sortedEvents.filter((event) => event.type === activeType)),
     [activeType, sortedEvents]
   );
-  const selectedEvent = filteredEvents.find((event) => event.slug === selectedSlug) ?? filteredEvents[0] ?? firstUpcoming;
+  const filteredDefaultEvent = getDefaultEvent(filteredEvents) ?? defaultEvent;
+  const selectedEvent = filteredEvents.find((event) => event.slug === selectedSlug) ?? filteredDefaultEvent;
   const [visibleMonth, setVisibleMonth] = useState(monthStart(selectedEvent));
 
   useEffect(() => {
     if (!filteredEvents.some((event) => event.slug === selectedSlug) && filteredEvents[0]) {
-      setSelectedSlug(filteredEvents[0].slug);
+      setSelectedSlug((getDefaultEvent(filteredEvents) ?? filteredEvents[0]).slug);
     }
   }, [filteredEvents, selectedSlug]);
 
